@@ -1,48 +1,28 @@
-## Option Documentation
+# Option Documentation
 
 Below is a mapping to Buildah common options and their TSDoc documentation. They are used by `script/generate-types.js`.
 
-# @addHistory_config
-
-Add an entry to the image's history which will note changes to the settings for `cmd`, `entrypoint`, `env`, `healthcheck`, `label`, `onbuild`, `port`, `shell`, `stopSignal`, `user`, `volume`, and `workingdir`. Defaults to `false`.
-
-**Note:** You can also override the default value of --add-history by setting the BUILDAH_HISTORY environment variable.
-
-```shell
-export BUILDAH_HISTORY=true
-```
-
-@default false
-
-# @addHistory_run
-
-Add an entry to the history which will note what command is being invoked.
-
-**Note:** You can also override the default value by setting the BUILDAH_HISTORY environment variable (`"true"` or `"false"`).
-
-@default false
-
-# @addHost
+## @addHost
 
 Add a custom host-to-IP mapping by adding lines to `/etc/hosts`. The format is `hostname:ip`.
 
-# @all_images
+## @all_images
 
 Show all images, including intermediate images from a build.
 
-# @annotation
+## @annotation
 
 Add an image annotation (e.g. `annotation=value`) to the image metadata. Can be used multiple times.
 
 **Note:** this information is not present in Docker image formats, so it is discarded when writing images in Docker formats.
 
-# @arch
+## @arch
 
 Set the ARCH of the image to be pulled to the provided value instead of using the architecture of the host.
 
 Examples: `aarch64`, `arm`, `i686`, `ppc64le`, `s390x`, `x86_64`
 
-# @authfile
+## @authfile
 
 Path of the authentication file. Default is `${XDG_RUNTIME_DIR}/containers/auth.json`. If `XDG_RUNTIME_DIR` is not set, the default is `/run/containers/$UID/auth.json`.
 This file is created using using `buildah login`.
@@ -51,61 +31,57 @@ If the authorization state is not found there, `$HOME/.docker/config.json` is ch
 
 **Note:** You can also override the default path of the authentication file by setting the `REGISTRY_AUTH_FILE` environment variable.
 
-# @blobCache
+## @blobCache
 
 Assume image blobs in the specified directory will be available for pushing.
 
-# @buildahCommand
+## @buildahCommand
 
 Path to the `buildah` binary.
 
 @default buildah
 
-# @capAdd
+## @capAdd
 
 Add the specified capability to the set of capabilities which will be granted to the specified command. Certain capabilities are granted by default; this option can be used to add more beyond the defaults, which may have been modified by `capAdd` and `capDrop` options used with the `from()` invocation which created the container.
 
-# @capDrop
+## @capDrop
 
 Add the specified capability from the set of capabilities which will be granted to the specified command. The `CAP_AUDIT_WRITE`, `CAP_CHOWN`, `CAP_DAC_OVERRIDE`, `CAP_FOWNER`, `CAP_FSETID`, `CAP_KILL`, `CAP_MKNOD`, `CAP_NET_BIND_SERVICE`, `CAP_SETFCAP`, `CAP_SETGID`, `CAP_SETPCAP`, `CAP_SETUID`, and `CAP_SYS_CHROOT` capabilities are granted by default; this option can be used to remove them from the defaults, which may have been modified by `capAdd` and `capDrop` options used with the buildah from invocation which created the container.
 
 If a capability is specified to both the `capAdd` and `capDrop` options, it will be dropped.
 
-# @certDir
+## @certDir
 
 Use certificates at specified path (`*.crt`, `*.cert`, `*.key`) to connect to the registry. The default certificates directory is `/etc/containers/certs.d`.
 
-# @cgroupParent
+## @cgroupParent
 
 Path to cgroups under which the cgroup for the container will be created. If the path is not absolute, the path is considered to be relative to the cgroups path of the init process. Cgroups will be created if they do not already exist.
 
-# @cidfile
+## @cidfile
 
 Write the container ID to the specified file.
 
-# @cniConfigDir
+## @cniConfigDir
 
 Location of CNI configuration files which will dictate which plugins will be used to configure network interfaces and routing inside the running container, if the container will be run in its own network namespace, and networking is not disabled.
 
-# @cniPluginPath
+## @cniPluginPath
 
 List of directories in which the CNI plugins which will be used for configuring network namespaces can be found.
 
-# @commit_image
-
-New image name to commit.
-
-# @cpuPeriod
+## @cpuPeriod
 
 Limit the container's CPU usage (CFS / Completely Fair Scheduler). This option tell the kernel to restrict the container's CPU usage to the period you specify.
 
-# @cpuQuota
+## @cpuQuota
 
 Limit the CPU CFS (Completely Fair Scheduler) quota
 
 Limit the container's CPU usage. By default, containers run with the full CPU resource. This flag tell the kernel to restrict the container's CPU usage to the quota you specify.
 
-# @cpuShares
+## @cpuShares
 
 CPU shares (relative weight)
 
@@ -128,33 +104,33 @@ PID    container  CPU  CPU share
 102    {C1}       2    100% of CPU2
 ```
 
-# @cpusetCPUs
+## @cpusetCPUs
 
 CPUs in which to allow execution (format: `0`, `0-3`, `0,1`)
 
-# @cpusetMems
+## @cpusetMems
 
 Memory nodes (MEMs) in which to allow execution (format: `0`, `0-3`, `0,1`). Only effective on NUMA systems.
 
 If you have four memory nodes on your system `(0-3)`, use `cpusetMems: '0,1'` then processes in your container will only use memory from the first two memory nodes.
 
-# @creds
+## @creds
 
 The `[username[:password]]` to use to authenticate with the registry if required. If one or both values are not supplied, a command line prompt will appear and the value can be entered. The password is entered without echo.
 
-# @disableCompression
+## @disableCompression
 
 Don't compress filesystem layers when building the image unless it is required by the location where the image is being written. This is the default setting, because image layers are compressed automatically when they are pushed to registries, and images being written to local storage would only need to be decompressed again to be stored. Compression can be forced in all cases by setting to `false`.
 
-# @decryptionKey
+## @decryptionKey
 
 The `key` or `key:passphrase` to be used for decryption of images. Key can point to keys and/or certificates. Decryption will be tried with all keys. If the key is protected by a passphrase, it is required to be passed in the argument and omitted otherwise.
 
-# @devices
+## @devices
 
 Add a host device or devices under a directory to the container. The format is `<device-on-host>[:<device-on-container>][:<permissions>]` (e.g. `device: '/dev/sdc:/dev/xvdc:rwm'`)
 
-# @dnsServers
+## @dnsServers
 
 Set custom DNS servers.
 
@@ -162,15 +138,15 @@ This option can be used to override the DNS configuration passed to the containe
 
 The special value `none` can be specified to disable creation of `/etc/resolv.conf` in the container by Buildah. The `/etc/resolv.conf` file in the image will be used without changes.
 
-# @dnsOptions
+## @dnsOptions
 
 Set custom DNS options.
 
-# @dnsSearch
+## @dnsSearch
 
 Set custom DNS search domains.
 
-# @encryptionKeys
+## @encryptionKeys
 
 The encryption protocol and key material required for image encryption. Format `protocol:keyfile`.
 
@@ -178,11 +154,11 @@ Protocol can be JWE (RFC7516), PGP (RFC4880), and PKCS7 (RFC2315) and the key ma
 
 Examples: `jwe:/path/to/key.pem`, `pgp:admin@example.com`, `pkcs7:/path/to/x509-file`
 
-# @encryptLayers
+## @encryptLayers
 
 Layer(s) to encrypt: 0-indexed layer indices with support for negative indexing (e.g. 0 is the first layer, -1 is the last layer). If not defined, will encrypt all layers if `encryptionKey` flag is specified.
 
-# @format
+## @format
 
 Control the format for the built image's manifest and configuration data. Recognized formats include:
 
@@ -191,21 +167,21 @@ Control the format for the built image's manifest and configuration data. Recogn
 
 **Note:** You can also override the default format by setting the `BUILDAH_FORMAT` environment variable.
 
-# @hostname
+## @hostname
 
 Set the hostname inside of the running container.
 
-# @httpProxy
+## @httpProxy
 
 By default proxy environment variables are passed into the container if set for the Buildah process. This can be disabled by setting the `httpProxy` option to `false`. The environment variables passed in include `http_proxy`, `https_proxy`, `ftp_proxy`, `no_proxy`, and also the upper case versions of those.
 
 @default true
 
-# @iidfile
+## @iidfile
 
 Write the image ID to the file.
 
-# @ipc
+## @ipc
 
 Sets the configuration for the IPC namespaces for the container. The configured value can be:
 
@@ -213,7 +189,7 @@ Sets the configuration for the IPC namespaces for the container. The configured 
 - `private` to indicate that a new IPC namespace should be created,
 - `host` to indicate that the IPC namespace in which buildah itself is being run should be reused, or it can be the path to an IPC namespace which is already in use by another process
 
-# @isolation
+## @isolation
 
 Controls what type of isolation is used for running the process. Recognized types include:
 
@@ -225,23 +201,23 @@ Controls what type of isolation is used for running the process. Recognized type
 
 @default "oci"
 
-# @manifest
+## @manifest
 
 Name of the manifest list to which the image will be added. Creates the manifest list if it does not exist. This option is useful for building multi architecture images.
 
-# @memory
+## @memory
 
 Memory limit (format: `<number>[<unit>]`, where unit = `b`, `k`, `m` or `g`).
 
 Allows you to constrain the memory available to a container. If the host supports swap memory, then the `memory` setting can be larger than physical RAM. If a limit of 0 is specified or the option is omitted, the container's memory is not limited. The actual limit may be rounded up to a multiple of the operating system's page size (the value would be very large, that's millions of trillions).
 
-# @memorySwap
+## @memorySwap
 
 A limit value equal to memory plus swap. Must be used with the `memory` option. The value of `memorySwap` should always be larger than the `memory` value. By default, the value of `memorySwap` will be set to double the value of `memory`.
 
 The format is `<number>[<unit>]`. Unit can be `b` (bytes), `k` (kilobytes), `m` (megabytes), or `g` (gigabytes). If you don't specify a unit, `b` is used. Set to `-1` to enable unlimited swap.
 
-# @mounts
+## @mounts
 
 Attach a filesystem mount to the container
 
@@ -268,11 +244,11 @@ type=tmpfs,tmpfs-size=512M,destination=/path/in/container
 - tmpfs-size: Size of the tmpfs mount in bytes. Unlimited by default in Linux.
 - tmpfs-mode: File mode of the tmpfs in octal. (e.g. 700 or 0700.) Defaults to 1777 in Linux.
 
-# @name
+## @name
 
 A name for the working container
 
-# @noPivot
+## @noPivot
 
 Do not use pivot root to jail process inside rootfs. This should be used whenever the rootfs is on top of a ramdisk.
 
@@ -282,7 +258,7 @@ Do not use pivot root to jail process inside rootfs. This should be used wheneve
 export BUILDAH_NOPIVOT=true
 ```
 
-# @network
+## @network
 
 Sets the configuration for the network namespace for the container.
 
@@ -293,15 +269,15 @@ Sets the configuration for the network namespace for the container.
 
 @default private
 
-# @omitTimestamp
+## @omitTimestamp
 
 Set created timestamp to epoch 0 to allow for deterministic builds
 
-# @os
+## @os
 
 Set the OS of the image to be pulled to the provided value instead of using the current operating system of the host.
 
-# @pid
+## @pid
 
 Sets the configuration for the PID namespace for the container. The configured value can be:
 
@@ -309,7 +285,7 @@ Sets the configuration for the PID namespace for the container. The configured v
 - `host` to indicate that the PID namespace in which buildah itself is being run should be reused
 - `path/to/pid/namespace` path to PID namespace which is already in use by another process
 
-# @pull
+## @pull
 
 When enabled, attempt to pull the latest image from the registries listed in `registries.conf` if a local image does not exist or the image is newer than the one in storage. Raise an error if the image is not in any listed registry and is not present locally.
 
@@ -317,31 +293,19 @@ When disabled, do not pull the image from the registry, use only the local versi
 
 @default true
 
-# @pullAlways
+## @pullAlways
 
 Pull the image from the first registry it is found in as listed in `registries.conf`. Raise an error if not found in the registries, even if the image is present locally.
 
-# @pullNever
+## @pullNever
 
 Do not pull the image from the registry, use only the local version. Raise an error if the image is not present locally.
 
-# @quiet_pull
-
-If an image needs to be pulled from the registry, suppress progress output.
-
-# @quiet_commit
-
-When writing the output image, suppress progress output.
-
-# @referenceTime
+## @referenceTime
 
 Set the timestamp on the image to match the named `file`.
 
-# @rm_commit
-
-Remove the working container and its contents after creating the image. Default leaves the container and its content in place.
-
-# @runtime
+## @runtime
 
 The path to an alternate OCI-compatible runtime. Default is `runc`, or `crun` when machine is configured to use cgroups V2.
 
@@ -351,13 +315,13 @@ The path to an alternate OCI-compatible runtime. Default is `runc`, or `crun` wh
 export BUILDAH_RUNTIME=/usr/bin/crun
 ```
 
-# @runtimeFlag
+## @runtimeFlag
 
 Adds global flags for the container runtime. To list the supported flags, please consult the manpages of the selected container runtime.
 
 **Note:** Do not pass the leading -- to the flag. To pass the runc flag --log-format json, the option given would be `'log-format=json'`.
 
-# @securityOpt
+## @securityOpt
 
 Security Options
 
@@ -372,39 +336,39 @@ Security Options
 - `apparmor=unconfined` Turn off apparmor confinement for the container
 - `apparmor=your-profile` Set the apparmor confinement profile for the container
 
-# @shmSize
+## @shmSize
 
 Size of `/dev/shm`. The format is `<number>[<unit>]`. number must be greater than 0. Unit is optional and can be `b` (bytes), `k` (kilobytes), `m` (megabytes), or `g` (gigabytes). If you omit the unit, the system uses `b` (bytes). If you omit the size entirely, the system uses `64m`.
 
 @default 64m
 
-# @signBy
+## @signBy
 
 Sign the new image using the GPG key that matches the specified fingerprint.
 
-# @signaturePolicy
+## @signaturePolicy
 
 Path to a signature policy file (not typically used)
 
-# @squash
+## @squash
 
 Squash all of the new image's layers (including those inherited from a base image) into a single new layer.
 
-# @timestamp
+## @timestamp
 
 Set the create timestamp to seconds since epoch to allow for deterministic builds (defaults to current time). By default, the created timestamp is changed and written into the image manifest with every commit, causing the image's sha256 hash to be different even if the sources are exactly the same otherwise. When `timestamp` is set, the created timestamp is always set to the time specified and therefore not changed, allowing the image's sha256 to remain the same. All files committed to the layers of the image will be created with the timestamp.
 
-# @tlsVerify
+## @tlsVerify
 
 Require HTTPS and verification of certificates when talking to container registries. TLS verification cannot be used when talking to an insecure registry.
 
 @default true
 
-# @tty
+## @tty
 
 By default a pseudo-TTY is allocated only when buildah's standard input is attached to a pseudo-TTY. Setting the `tty` option to true will cause a pseudo-TTY to be allocated inside the container connecting the user's "terminal" with the stdin and stdout stream of the container. Setting the `tty` option to false will prevent the pseudo-TTY from being allocated.
 
-# @ulimit
+## @ulimit
 
 Specifies resource limits to apply to processes launched during `buildah run`. This option can be specified multiple times. Recognized resource types include:
 
@@ -426,11 +390,11 @@ Specifies resource limits to apply to processes launched during `buildah run`. T
 - `sigpending` maximum number of pending signals (ulimit -i)
 - `stack` maximum stack size (ulimit -s)
 
-# @user
+## @user
 
 Set the user to be used for running the command in the container. The user can be specified as a user name or UID, optionally followed by a group name or GID, separated by a colon (`:`). If names are used, the container should include entries for those names in its `/etc/passwd` and `/etc/group` files.
 
-# @userns
+## @userns
 
 Sets the configuration for user namespaces when the container is subsequently used for `buildah run`. The configured value can be:
 
@@ -438,7 +402,7 @@ Sets the configuration for user namespaces when the container is subsequently us
 - `host` to indicate that the user namespace in which Buildah itself is being run should be reused
 - `path/to/user/namespace` path to an user namespace which is already in use by another process.
 
-# @userns-uid-map-user
+## @userns-uid-map-user
 
 Directly specifies a UID mapping which should be used to set ownership, at the filesystem level, on the container's contents. Commands run using `buildah run` will default to being run in their own user namespaces, configured using the UID and GID maps.
 
@@ -452,7 +416,7 @@ If none of `usernsUidMapUser`, `usernsGidMapGroup`, or `usernsUidMap` are specif
 
 **NOTE:** When this option is specified by a rootless user, the specified mappings are relative to the rootless usernamespace in the container, rather than being relative to the host as it would be when run rootful.
 
-# @usernsGidMapGroup
+## @usernsGidMapGroup
 
 Directly specifies a GID mapping which should be used to set ownership, at the filesystem level, on the container's contents. Commands run using `buildah run` will default to being run in their own user namespaces, configured using the UID and GID maps.
 
@@ -466,15 +430,15 @@ If none of `usernsUidMapUser`, `usernsGidMapGroup`, or `usernsGidMap` are specif
 
 **NOTE:** When this option is specified by a rootless user, the specified mappings are relative to the rootless usernamespace in the container, rather than being relative to the host as it would be when run rootful.
 
-# @usernsUidMapUser
+## @usernsUidMapUser
 
 Specifies that a UID mapping which should be used to set ownership, at the filesystem level, on the container's contents, can be found in entries in the `/etc/subuid` file which correspond to the specified user. Commands run using buildah run will default to being run in their own user namespaces, configured using the UID and GID maps. If `usernsGidMapGroup` is specified, but `usernsUidMapUser` is not specified, Buildah will assume that the specified group name is also a suitable user name to use as the default setting for this option.
 
-# @usernsGidMapGroup
+## @usernsGidMapGroup
 
 Specifies that a GID mapping which should be used to set ownership, at the filesystem level, on the container's contents, can be found in entries in the `/etc/subgid` file which correspond to the specified group. Commands run using buildah run will default to being run in their own user namespaces, configured using the UID and GID maps. If `usernsUidMapUser` is specified, but `usernsGidMapGroup` is not specified, Buildah will assume that the specified user name is also a suitable group name to use as the default setting for this option.
 
-# @uts
+## @uts
 
 Sets the configuration for the UTS namespace for the container. The configured value can be:
 
@@ -482,62 +446,10 @@ Sets the configuration for the UTS namespace for the container. The configured v
 - `host` to indicate that the UTS namespace in which buildah itself is being run should be reused
 - `path/to/uts/namespace` path to a UTS namespace which is already in use by another process.
 
-# @variant
+## @variant
 
 Set the architecture variant of the image to be pulled.
 
-# @volumes
+## @volumes
 
 Create a bind mount. Buildah bind mounts the volume `hostPath` on the host to the `containerPath` in the Buildah container.
-
-# @volume_hostPath
-
-An absolute path to the bind mount location on the **host**.
-
-# @volume_containerPath
-
-An absolute path to the bind mount location in the **container**.
-
-# @volume_readOnly
-
-If `true`, mount the volume in read-only mode.
-
-@default false
-
-# @volume_chown
-
-If `true`, Buildah will use the correct host UID and GID based on the UID and GID within the container, to change the owner and group of the source volume.
-
-By default, Buildah does not change the owner and group of source volume directories mounted into containers. If a container is created in a new user namespace, the UID and GID in the container may correspond to another UID and GID on the host.
-
-@default false
-
-# @volume_relabel
-
-Labeling systems like SELinux require that proper labels are placed on volume content mounted into a container. Without a label, the security system might prevent the processes running inside the container from using the content. By default, Buildah does not change the labels set by the OS.
-
-Valid options are:
-
-- `none` - do not relabel the volume (default)
-- `shared` - two containers share the volume content, Buildah will label the content with a shared content label, shared volume labels allow all containers to read/write content
-- `private` - label the content with a private unshared label, only the current container can use a private volume
-
-@default 'none'
-
-# @volume_mountPropagation
-
-By default bind mounted volumes are `private`. That means any mounts done inside container will not be visible on the host and vice versa. This behavior can be changed by specifying a volume mount propagation property.
-
-When the mount propagation policy is set to `shared`, any mounts completed inside the container on that volume will be visible to both the host and container.
-
-When the mount propagation policy is set to `slave`, one way mount propagation is enabled and any mounts completed on the host for that volume will be visible only inside of the container.
-
-The propagation property can be specified only for bind mounted volumes and not for internal volumes or named volumes. For mount propagation to work on the source mount point (the mount point where source dir is mounted on) it has to have the right propagation properties. For shared volumes, the source mount point has to be shared. And for `slave` volumes, the source mount has to be either `shared` or `slave`.
-
-Use `df <source-dir>` to determine the source mount and then use `findmnt -o TARGET,PROPAGATION <source-mount-dir>` to determine propagation properties of source mount, if `findmnt` utility is not available, the source mount point can be determined by looking at the mount entry in `/proc/self/mountinfo`. Look at optional fields and see if any propagation properties are specified. `shared:X` means the mount is shared, `master:X` means the mount is `slave` and if nothing is there that means the mount is `private`.
-
-To change propagation properties of a mount point use the mount command. For example, to bind mount the source directory `/foo` do `mount --bind /foo /foo` and `mount --make-private --make-shared /foo`. This will convert `/foo` into a `shared` mount point. The propagation properties of the source mount can be changed directly. For instance if `/` is the source mount for `/foo`, then use `mount --make-shared /` to convert `/` into a shared mount.
-
-# @END
-
-This entry makes the regex work

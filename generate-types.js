@@ -1,12 +1,21 @@
 const fs = require('fs')
+const globby = require('globby')
+const path = require('path')
 const prettier = require('prettier')
 
-const docs = fs.readFileSync('src/optionDocs.md', {encoding: 'utf8'})
+const sources = globby.sync('src/typedoc/*.md')
 
-function getDefinition(key) {
-  const regexp = new RegExp(`^# @${key}\\n(.+?)\\n# @`, 'ms')
-  const matches = regexp.exec(docs)
-  return matches ? matches[1].trim() : ''
+const docs = Object.fromEntries(
+  sources.map((source) => [
+    path.basename(source, '.md'),
+    fs.readFileSync(source, {encoding: 'utf8'}) + '\n\n## @END_OF_FILE',
+  ]),
+)
+
+function getDefinition(key, doc) {
+  const regexp = new RegExp(`^## @${key}\\n(.+?)\\n## @`, 'ms')
+  const matches = regexp.exec(doc)
+  return matches ? matches[1].trim() : null
 }
 
 function formatAsDoc(doc) {
@@ -21,7 +30,7 @@ const types = {
   GlobalOptions: [{def: 'buildahCommand?: string', doc: 'buildahCommand'}],
 
   CommitOptions: [
-    {def: 'image?: string', doc: 'commit_image'},
+    {def: 'image?: string', doc: 'image'},
     {def: 'authfile?: string', doc: 'authfile'},
     {def: 'blobCache?: string', doc: 'blobCache'},
     {def: 'certDir?: string', doc: 'certDir'},
@@ -33,9 +42,9 @@ const types = {
     {def: 'iidfile?: string', doc: 'iidfile'},
     {def: 'manifest?: string', doc: 'manifest'},
     {def: 'omitTimestamp?: boolean', doc: 'omitTimestamp'},
-    {def: 'quiet?: boolean', doc: 'quiet_commit'},
+    {def: 'quiet?: boolean', doc: 'quiet'},
     {def: 'referenceTime?: string', doc: 'referenceTime'},
-    {def: 'rm?: boolean', doc: 'rm_commit'},
+    {def: 'rm?: boolean', doc: 'rm'},
     {def: 'signaturePolicy?: string', doc: 'signaturePolicy'},
     {def: 'signBy?: string', doc: 'signBy'},
     {def: 'squash?: boolean', doc: 'squash'},
@@ -44,32 +53,32 @@ const types = {
   ],
 
   ConfigOptions: [
-    {def: 'addHistory?: boolean', doc: 'addHistory'}, //, "add-history",
-    {def: 'annotation?: string[]', doc: 'annotation'}, //, "annotation", "a
-    {def: 'arch?: string', doc: 'arch'}, //, "arch", "",
-    {def: 'author?: string', doc: 'author'}, //, "author", "",
-    {def: 'cmd?: string', doc: 'cmd'}, //, "cmd", "",
-    {def: 'comment?: string', doc: 'comment'}, //, "comment", "",
-    {def: 'createdBy?: string', doc: 'createdBy'}, //, "created-by",
-    {def: 'domainName?: string', doc: 'domainName'}, //, "domainname", "",
-    {def: 'entrypoint?: string', doc: 'entrypoint'}, //, "entrypoint", "",
-    {def: 'env?: string[]', doc: 'env'}, //, "env", "e
-    {def: 'healthcheck?: string', doc: 'healthcheck'}, //, "healthcheck", "",
-    {def: 'healthcheckInterval?: string', doc: 'healthcheckInterval'}, //, "healthcheck-interval",
-    {def: 'healthcheckRetries?: number', doc: 'healthcheckRetries'}, //, "healthcheck-retries",
-    {def: 'healthcheckStartPeriod?: string', doc: 'healthcheckStartPeriod'}, //, "healthcheck-start-period
-    {def: 'healthcheckTimeout?: string', doc: 'healthcheckTimeout'}, //, "healthcheck-timeout",
-    {def: 'historyComment?: string', doc: 'historyComment'}, //, "history-comment",
-    {def: 'hostname?: string', doc: 'hostname'}, //, "hostname", "",
-    {def: 'label?: string[]', doc: 'label'}, //, "label", "l
-    {def: 'onbuild?: string[]', doc: 'onbuild'}, //, "onbuild", []
-    {def: 'os?: string', doc: 'os'}, //, "os", "",
-    {def: 'ports?: string[]', doc: 'ports'}, //, "port", "p
-    {def: 'shell?: string', doc: 'shell'}, //, "shell", "",
-    {def: 'stopSignal?: string', doc: 'stopSignal'}, //, "stop-signal",
-    {def: 'user?: string', doc: 'user'}, //, "user", "u
-    {def: 'volume?: string[]', doc: 'volume'}, //, "volume", "v
-    {def: 'workingDir?: string', doc: 'workingDir'}, //, "workingdir", "",
+    {def: 'addHistory?: boolean', doc: 'addHistory'},
+    {def: 'annotation?: string[]', doc: 'annotation'},
+    {def: 'arch?: string', doc: 'arch'},
+    {def: 'author?: string', doc: 'author'},
+    {def: 'cmd?: string', doc: 'cmd'},
+    {def: 'comment?: string', doc: 'comment'},
+    {def: 'createdBy?: string', doc: 'createdBy'},
+    {def: 'domainName?: string', doc: 'domainName'},
+    {def: 'entrypoint?: string', doc: 'entrypoint'},
+    {def: 'env?: string[]', doc: 'env'},
+    {def: 'healthcheck?: string', doc: 'healthcheck'},
+    {def: 'healthcheckInterval?: string', doc: 'healthcheckInterval'},
+    {def: 'healthcheckRetries?: number', doc: 'healthcheckRetries'},
+    {def: 'healthcheckStartPeriod?: string', doc: 'healthcheckStartPeriod'},
+    {def: 'healthcheckTimeout?: string', doc: 'healthcheckTimeout'},
+    {def: 'historyComment?: string', doc: 'historyComment'},
+    {def: 'hostname?: string', doc: 'hostname'},
+    {def: 'label?: string[]', doc: 'label'},
+    {def: 'onbuild?: string[]', doc: 'onbuild'},
+    {def: 'os?: string', doc: 'os'},
+    {def: 'ports?: string[]', doc: 'ports'},
+    {def: 'shell?: string', doc: 'shell'},
+    {def: 'stopSignal?: string', doc: 'stopSignal'},
+    {def: 'user?: string', doc: 'user'},
+    {def: 'volume?: string[]', doc: 'volume'},
+    {def: 'workingDir?: string', doc: 'workingDir'},
   ],
 
   FromOptions: [
@@ -82,7 +91,7 @@ const types = {
     {def: 'pull?: boolean', doc: 'pull'},
     {def: 'pullAlways?: boolean', doc: 'pullAlways'},
     {def: 'pullNever?: boolean', doc: 'pullNever'},
-    {def: 'quiet?: boolean', doc: 'quiet_pull'},
+    {def: 'quiet?: boolean', doc: 'quiet'},
     {def: 'signaturePolicy?: string', doc: 'signaturePolicy'},
     {def: 'tlsVerify?: boolean', doc: 'tlsVerify'},
 
@@ -115,17 +124,17 @@ const types = {
   ],
 
   ListContainersOptions: [
-    {def: 'all?: boolean', doc: 'containers_all'},
-    {def: 'filter?: string', doc: 'containers_filter'},
+    {def: 'all?: boolean', doc: 'all'},
+    {def: 'filter?: string', doc: 'filter'},
   ],
 
   ListImagesOptions: [
-    {def: 'all?: boolean', doc: 'images_all'},
-    {def: 'filter?: string', doc: 'images_filter'},
+    {def: 'all?: boolean', doc: 'all'},
+    {def: 'filter?: string', doc: 'filter'},
   ],
 
   RunOptions: [
-    {def: 'addHistory?: boolean', doc: 'addHistory_run'},
+    {def: 'addHistory?: boolean', doc: 'addHistory'},
     {def: 'capAdd?: string[]', doc: 'capAdd'},
     {def: 'capDrop?: string[]', doc: 'capDrop'},
     {def: 'hostname?: string', doc: 'hostname'},
@@ -141,31 +150,31 @@ const types = {
   ],
 
   Container: [
-    {def: 'id: string', doc: 'container_id'},
-    {def: 'builder: boolean', doc: 'container_builder'},
-    {def: 'imageid: string', doc: 'container_imageid'},
-    {def: 'imagename: string', doc: 'container_imagename'},
-    {def: 'containername: string', doc: 'container_containername'},
+    {def: 'id: string', doc: 'id'},
+    {def: 'builder: boolean', doc: 'builder'},
+    {def: 'imageid: string', doc: 'imageid'},
+    {def: 'imagename: string', doc: 'imagename'},
+    {def: 'containername: string', doc: 'containername'},
   ],
 
   Image: [
-    {def: 'id: string', doc: 'image_id'},
-    {def: 'names: string[]', doc: 'image_names'},
-    {def: 'digest: string', doc: 'image_digest'},
-    {def: 'createdat: string', doc: 'image_createdat'},
-    {def: 'createdatraw: string', doc: 'image_createdatraw'},
-    {def: 'size: string', doc: 'image_size'},
-    {def: 'readonly: boolean', doc: 'image_readonly'},
-    {def: 'history: string[]', doc: 'image_history'},
+    {def: 'id: string', doc: 'id'},
+    {def: 'names: string[]', doc: 'names'},
+    {def: 'digest: string', doc: 'digest'},
+    {def: 'createdat: string', doc: 'createdat'},
+    {def: 'createdatraw: string', doc: 'createdatraw'},
+    {def: 'size: string', doc: 'size'},
+    {def: 'readonly: boolean', doc: 'readonly'},
+    {def: 'history: string[]', doc: 'history'},
   ],
 
   Volume: [
-    {def: 'hostPath: string', doc: 'volume_hostPath'},
-    {def: 'containerPath: string', doc: 'volume_containerPath'},
-    {def: 'readOnly?: boolean', doc: 'volume_readOnly'},
-    {def: 'chown?: boolean', doc: 'volume_chown'},
-    {def: "relabel?: 'none' | 'shared' | 'private'", doc: 'volume_relabel'},
-    {def: "mountPropagation?: 'private' | 'shared' | 'slave'", doc: 'volume_mountPropagation'},
+    {def: 'hostPath: string', doc: 'hostPath'},
+    {def: 'containerPath: string', doc: 'containerPath'},
+    {def: 'readOnly?: boolean', doc: 'readOnly'},
+    {def: 'chown?: boolean', doc: 'chown'},
+    {def: "relabel?: 'none' | 'shared' | 'private'", doc: 'relabel'},
+    {def: "mountPropagation?: 'private' | 'shared' | 'slave'", doc: 'mountPropagation'},
   ],
 }
 
@@ -174,7 +183,9 @@ const lines = []
 for (const type of Object.keys(types)) {
   lines.push(`export interface ${type} {`)
   for (const prop of types[type]) {
-    lines.push(formatAsDoc(getDefinition(prop.doc)))
+    const doc = (docs[type] ? getDefinition(prop.doc, docs[type]) : null) ?? getDefinition(prop.doc, docs._common) ?? ''
+
+    lines.push(formatAsDoc(doc))
     lines.push(prop.def)
     lines.push('')
   }

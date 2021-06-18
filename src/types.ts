@@ -127,7 +127,15 @@ export interface CommitOptions {
 
 export interface ConfigOptions {
   /**
+   * Add an entry to the image's history which will note changes to the settings for `cmd`, `entrypoint`, `env`, `healthcheck`, `label`, `onbuild`, `port`, `shell`, `stopSignal`, `user`, `volume`, and `workingdir`. Defaults to `false`.
    *
+   * **Note:** You can also override the default value of --add-history by setting the BUILDAH_HISTORY environment variable.
+   *
+   * ```shell
+   * export BUILDAH_HISTORY=true
+   * ```
+   *
+   * @default false
    */
   addHistory?: boolean
 
@@ -547,24 +555,24 @@ export interface FromOptions {
 
 export interface ListContainersOptions {
   /**
-   *
+   * TODO
    */
   all?: boolean
 
   /**
-   *
+   * TODO
    */
   filter?: string
 }
 
 export interface ListImagesOptions {
   /**
-   *
+   * TODO
    */
   all?: boolean
 
   /**
-   *
+   * TODO
    */
   filter?: string
 }
@@ -688,69 +696,69 @@ export interface RunOptions {
 
 export interface Container {
   /**
-   *
+   * TODO
    */
   id: string
 
   /**
-   *
+   * TODO
    */
   builder: boolean
 
   /**
-   *
+   * TODO
    */
   imageid: string
 
   /**
-   *
+   * TODO
    */
   imagename: string
 
   /**
-   *
+   * TODO
    */
   containername: string
 }
 
 export interface Image {
   /**
-   *
+   * TODO
    */
   id: string
 
   /**
-   *
+   * TODO
    */
   names: string[]
 
   /**
-   *
+   * TODO
    */
   digest: string
 
   /**
-   *
+   * TODO
    */
   createdat: string
 
   /**
-   *
+   * TODO
    */
   createdatraw: string
 
   /**
-   *
+   * TODO
    */
   size: string
 
   /**
-   *
+   * TODO
    */
   readonly: boolean
 
   /**
-   *
+   * TODO
    */
   history: string[]
 }
