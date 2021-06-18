@@ -13,6 +13,7 @@
     "clean": "rm -rf dist",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
+    "generate-types": "node generate-types.js > src/types.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -28,6 +29,7 @@
     "prettier-plugin-organize-imports": "^2.1.0",
     "prettier-plugin-pkg": "^0.9.0",
     "ts-node": "^10.0.0",
+    "typedoc": "^0.21.0-beta.4",
     "typescript": "^4.3.2"
   }
 }
