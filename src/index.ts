@@ -1,15 +1,24 @@
 import execa from 'execa'
-import * as flags from './commandBuilder'
 import {
+  addCommand,
+  commitCommand,
+  configCommand,
+  copyCommand,
+  fromCommand,
+  listContainers,
+  listImages,
+  unshare,
+} from './internal/commands'
+import {
+  AddOptions,
   CommitOptions,
   ConfigOptions,
-  Container,
-  FromOptions,
-  GlobalOptions,
-  Image,
+  CopyOptions,
   ListContainersOptions,
   ListImagesOptions,
-} from './types'
+  UnshareOptions,
+} from './internal/types'
+import {Container, FromOptions, GlobalOptions, Image} from './types'
 
 export class Buildah {
   command: string
@@ -19,63 +28,37 @@ export class Buildah {
     this.command = options.buildahCommand ?? 'buildah'
   }
 
-  async commit(container: string, options: CommitOptions = {}) {
-    const args: string[] = []
-    if (options.authfile) args.push('--authfile', options.authfile)
-    if (options.blobCache) args.push('--blob-cache', options.blobCache)
-    if (options.certDir) args.push('--cert-dir', options.certDir)
-    if (options.creds) args.push('--creds', options.creds)
-    if (options.disableCompression) args.push('--disable-compression')
-    if (options.encryptionKeys) args.push(...options.encryptionKeys.flatMap((i) => ['--encryption-key', i]))
-    if (options.encryptLayers) args.push(...options.encryptLayers.flatMap((i) => ['--encrypt-layer', i.toString()]))
-    if (options.format) args.push('--format', options.format)
-    if (options.iidfile) args.push('--iidfile', options.iidfile)
-    if (options.manifest) args.push('--manifest', options.manifest)
-    if (options.omitTimestamp) args.push('--omit-timestamp')
-    if (options.quiet) args.push('--quiet')
-    if (options.referenceTime) args.push('--reference-time', options.referenceTime)
-    if (options.rm) args.push('--rm')
-    if (options.signaturePolicy) args.push('--signature-policy', options.signaturePolicy)
-    if (options.signBy) args.push('--sign-by', options.signBy)
-    if (options.squash) args.push('--squash')
-    if (options.timestamp != null) args.push('--timestamp', options.timestamp.toString())
-    if (options.tlsVerify) args.push('--tls-verify')
+  async add(container: string, src: string, dest: string, options: AddOptions = {}) {
+    await addCommand.exec(this.command, options, container, src, dest)
+  }
 
-    const cmd = await execa(this.command, ['commit', ...args, container, ...(options.image ? [options.image] : [])])
+  /**
+   * Create an image from a working container.
+   *
+   * @param container ID of the working container
+   * @param options Commit options
+   * @returns The image ID of the image that was created
+   */
+  async commit(container: string, options: CommitOptions = {}) {
+    const args = ['commit', ...commitCommand.args(options), container, ...(options.image ? [options.image] : [])]
+    const cmd = await execa(this.command, args)
     return cmd.stdout
   }
 
+  /**
+   * Update image configuration settings.
+   *
+   * Updates one or more of the settings kept for a container.
+   *
+   * @param container Container name or ID
+   * @param options Configuration settings to update
+   */
   async config(container: string, options: ConfigOptions = {}) {
-    const args = [
-      flags.booleanFlag('--add-history', options.addHistory),
-      flags.stringArrayFlag('--annotation', options.annotation),
-      flags.stringFlag('--arch', options.arch),
-      flags.stringFlag('--author', options.author),
-      flags.stringFlag('--cmd', options.cmd),
-      flags.stringFlag('--comment', options.comment),
-      flags.stringFlag('--created-by', options.createdBy),
-      flags.stringFlag('--domainname', options.domainName),
-      flags.stringFlag('--entrypoint', options.entrypoint),
-      flags.stringArrayFlag('--env', options.env),
-      flags.stringFlag('--healthcheck', options.healthcheck),
-      flags.stringFlag('--healthcheck-interval', options.healthcheckInterval),
-      flags.numberFlag('--healthcheck-retries', options.healthcheckRetries),
-      flags.stringFlag('--healthcheck-start-period', options.healthcheckStartPeriod),
-      flags.stringFlag('--healthcheck-timeout', options.healthcheckTimeout),
-      flags.stringFlag('--history-comment', options.historyComment),
-      flags.stringFlag('--hostname', options.hostname),
-      flags.stringArrayFlag('--label', options.label),
-      flags.stringArrayFlag('--onbuild', options.onbuild),
-      flags.stringFlag('--os', options.os),
-      flags.stringArrayFlag('--port', options.ports),
-      flags.stringFlag('--shell', options.shell),
-      flags.stringFlag('--stop-signal', options.stopSignal),
-      flags.stringFlag('--user', options.user),
-      flags.stringArrayFlag('--volume', options.volume),
-      flags.stringFlag('--workingdir', options.workingDir),
-    ].flat()
+    await execa(this.command, ['config', ...configCommand.args(options), container])
+  }
 
-    await execa(this.command, ['config', ...args, container])
+  async copy(container: string, src: string, dest: string, options: CopyOptions = {}) {
+    await copyCommand.exec(this.command, options, container, src, dest)
   }
 
   /**
@@ -111,50 +94,7 @@ export class Buildah {
    * @returns The container ID of the container that was created
    */
   async from(image: string, options: FromOptions = {}): Promise<string> {
-    const args: string[] = []
-
-    if (options.authfile) args.push('authfile', options.authfile)
-    if (options.certDir) args.push('cert-dir', options.certDir)
-    if (options.cidfile) args.push('cidfile', options.cidfile)
-    if (options.creds) args.push('creds', options.creds)
-    if (options.format) args.push('format', options.format)
-    if (options.name) args.push('name', options.name)
-    if (options.pull) args.push('pull')
-    if (options.pullAlways) args.push('pull-always')
-    if (options.pullNever) args.push('pull-never')
-    if (options.quiet) args.push('quiet')
-    if (options.signaturePolicy) args.push('signature-policy', options.signaturePolicy)
-    if (options.tlsVerify) args.push('tls-verify')
-
-    // BudAndFromOptions
-    if (options.addHost) args.push(...options.addHost.flatMap((i) => ['--add-host', i]))
-    if (options.blobCache) args.push('--blob-cache', options.blobCache)
-    if (options.capAdd) args.push(...options.capAdd.flatMap((i) => ['--cap-add', i]))
-    if (options.capDrop) args.push(...options.capDrop.flatMap((i) => ['--cap-drop', i]))
-    if (options.cgroupParent) args.push('--cgroup-parent', options.cgroupParent)
-    if (options.cpuPeriod != null) args.push('--cpu-period', options.cpuPeriod.toString())
-    if (options.cpuQuota != null) args.push('--cpu-quota', options.cpuQuota.toString())
-    if (options.cpuShares != null) args.push('--cpu-shares', options.cpuShares.toString())
-    if (options.cpusetCPUs) args.push('--cpuset-cpus', options.cpusetCPUs)
-    if (options.cpusetMems) args.push('--cpuset-mems', options.cpusetMems)
-    if (options.decryptionKeys) args.push(...options.decryptionKeys.flatMap((i) => ['--decryption-key', i]))
-    if (options.devices) args.push(...options.devices.flatMap((i) => ['--device', i]))
-    if (options.dnsSearch) args.push(...options.dnsSearch.flatMap((i) => ['--dns-search', i]))
-    if (options.dnsServers) args.push(...options.dnsServers.flatMap((i) => ['--dns', i]))
-    if (options.dnsOptions) args.push(...options.dnsOptions.flatMap((i) => ['--dns-option', i]))
-    if (options.httpProxy) args.push('--http-proxy')
-    if (options.isolation) args.push('--isolation', options.isolation)
-    if (options.memory) args.push('--memory', options.memory)
-    if (options.memorySwap) args.push('--memory-swap', options.memorySwap)
-    if (options.arch) args.push('--arch', options.arch)
-    if (options.os) args.push('--os', options.os)
-    if (options.variant) args.push('--variant', options.variant)
-    if (options.securityOpt) args.push(...options.securityOpt.flatMap((i) => ['--security-opt', i]))
-    if (options.shmSize) args.push('--shm-size', options.shmSize)
-    if (options.ulimit) args.push(...options.ulimit.flatMap((i) => ['--ulimit', i]))
-    if (options.volumes) args.push(...options.volumes.flatMap((i) => ['--volume', i]))
-
-    const cmd = await execa(this.command, ['from', ...args, image])
+    const cmd = await fromCommand.exec(this.command, options, image)
     return cmd.stdout
   }
 
@@ -165,12 +105,7 @@ export class Buildah {
    * @returns A list of Buildah containers
    */
   async listContainers(options: ListContainersOptions = {}): Promise<Container[]> {
-    const args: string[] = []
-
-    if (options.all) args.push('--all')
-    if (options.filter) args.push('--filter', options.filter)
-
-    const cmd = await execa(this.command, ['containers', ...args])
+    const cmd = await listContainers.exec(this.command, options)
     if (cmd.stdout.trim() === 'null') return []
     return JSON.parse(cmd.stdout)
   }
@@ -182,12 +117,7 @@ export class Buildah {
    * @returns A list of images in local storage
    */
   async listImages(options: ListImagesOptions = {}): Promise<Image[]> {
-    const args: string[] = []
-
-    if (options.all) args.push('--all')
-    if (options.filter) args.push('--filter', options.filter)
-
-    const cmd = await execa(this.command, ['images', '--no-trunc', ...args])
+    const cmd = await listImages.exec(this.command, options, '--no-trunc')
     if (cmd.stdout.trim() === 'null') return []
     return JSON.parse(cmd.stdout)
   }
@@ -217,6 +147,10 @@ export class Buildah {
    */
   async tag(image: string, tag: string, ...additionalTags: string[]) {
     await execa(this.command, ['tag', image, tag, ...additionalTags])
+  }
+
+  async unshare(options: UnshareOptions = {}) {
+    await unshare.exec(this.command, options)
   }
 }
 

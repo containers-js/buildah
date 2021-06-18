@@ -1,6 +1,10 @@
 # CommitOptions typedocs
 
-These typedocs are specific to the `CommitOptions` type and override any definitions in `_common.md`.
+Values specified as `@@key` reference that key in `_common.md`.
+
+## @authfile
+
+@@authfile
 
 ## @image
 

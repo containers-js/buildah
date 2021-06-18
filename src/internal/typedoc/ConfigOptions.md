@@ -1,6 +1,6 @@
 # ConfigOptions typedocs
 
-These typedocs are specific to the `ConfigOptions` type and override any definitions in `_common.md`.
+Values specified as `@@key` reference that key in `_common.md`.
 
 ## @addHistory
 

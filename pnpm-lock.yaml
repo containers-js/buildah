@@ -3,8 +3,10 @@ lockfileVersion: 5.3
 specifiers:
   '@tsconfig/node14': ^1.0.1
   '@types/node': ^14.17.0
+  '@types/prettier': ^2.3.0
   esbuild-register: ^2.6.0
   execa: ^5.1.1
+  fast-case: ^1.6.0
   globby: ^11.0.4
   node-dev: ^7.0.0
   prettier: ^2.3.1
@@ -22,7 +24,9 @@ dependencies:
 devDependencies:
   '@tsconfig/node14': 1.0.1
   '@types/node': 14.17.0
+  '@types/prettier': 2.3.0
   esbuild-register: 2.6.0
+  fast-case: 1.6.0
   globby: 11.0.4
   node-dev: 7.0.0
   prettier: 2.3.1
@@ -70,6 +74,10 @@ packages:
 
   /@types/node/14.17.0:
     resolution: {integrity: sha512-w8VZUN/f7SSbvVReb9SWp6cJFevxb4/nkG65yLAya//98WgocKm5PLDAtSs5CtJJJM+kHmJjO/6mmYW4MHShZA==}
+    dev: true
+
+  /@types/prettier/2.3.0:
+    resolution: {integrity: sha512-hkc1DATxFLQo4VxPDpMH1gCkPpBbpOoJ/4nhuXw4n63/0R6bCpQECj4+K226UJ4JO/eJQz+1mC2I7JsWanAdQw==}
     dev: true
 
   /aggregate-error/3.1.0:
@@ -199,6 +207,10 @@ packages:
       signal-exit: 3.0.3
       strip-final-newline: 2.0.0
     dev: false
+
+  /fast-case/1.6.0:
+    resolution: {integrity: sha512-425m4uxKfw9fMiQ60ZFD8A46Gf1bAJlr/Wk+TRdKDOIQ+LjeFaFYJY+aaumr2n+5smNm4Ptud8uOzupLc8DvDg==}
+    dev: true
 
   /fast-glob/3.2.5:
     resolution: {integrity: sha512-2DtFcgT68wiTTiwZ2hNdJfcHNke9XOfnwmBRWXhmeKM8rF0TGwmC/Qto3S7RoZKp5cilZbxzO5iTNTQsJ+EeDg==}

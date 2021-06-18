@@ -23,7 +23,9 @@
   "devDependencies": {
     "@tsconfig/node14": "^1.0.1",
     "@types/node": "^14.17.0",
+    "@types/prettier": "^2.3.0",
     "esbuild-register": "^2.6.0",
+    "fast-case": "^1.6.0",
     "globby": "^11.0.4",
     "node-dev": "^7.0.0",
     "prettier": "^2.3.1",
