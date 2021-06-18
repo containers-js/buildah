@@ -1,6 +1,8 @@
 import execa from 'execa'
+import * as flags from './commandBuilder'
 import {
   CommitOptions,
+  ConfigOptions,
   Container,
   FromOptions,
   GlobalOptions,
@@ -41,6 +43,39 @@ export class Buildah {
 
     const cmd = await execa(this.command, ['commit', ...args, container, ...(options.image ? [options.image] : [])])
     return cmd.stdout
+  }
+
+  async config(container: string, options: ConfigOptions = {}) {
+    const args = [
+      flags.booleanFlag('--add-history', options.addHistory),
+      flags.stringArrayFlag('--annotation', options.annotation),
+      flags.stringFlag('--arch', options.arch),
+      flags.stringFlag('--author', options.author),
+      flags.stringFlag('--cmd', options.cmd),
+      flags.stringFlag('--comment', options.comment),
+      flags.stringFlag('--created-by', options.createdBy),
+      flags.stringFlag('--domainname', options.domainName),
+      flags.stringFlag('--entrypoint', options.entrypoint),
+      flags.stringArrayFlag('--env', options.env),
+      flags.stringFlag('--healthcheck', options.healthcheck),
+      flags.stringFlag('--healthcheck-interval', options.healthcheckInterval),
+      flags.numberFlag('--healthcheck-retries', options.healthcheckRetries),
+      flags.stringFlag('--healthcheck-start-period', options.healthcheckStartPeriod),
+      flags.stringFlag('--healthcheck-timeout', options.healthcheckTimeout),
+      flags.stringFlag('--history-comment', options.historyComment),
+      flags.stringFlag('--hostname', options.hostname),
+      flags.stringArrayFlag('--label', options.label),
+      flags.stringArrayFlag('--onbuild', options.onbuild),
+      flags.stringFlag('--os', options.os),
+      flags.stringArrayFlag('--port', options.ports),
+      flags.stringFlag('--shell', options.shell),
+      flags.stringFlag('--stop-signal', options.stopSignal),
+      flags.stringFlag('--user', options.user),
+      flags.stringArrayFlag('--volume', options.volume),
+      flags.stringFlag('--workingdir', options.workingDir),
+    ].flat()
+
+    await execa(this.command, ['config', ...args, container])
   }
 
   /**

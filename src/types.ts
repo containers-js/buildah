@@ -125,6 +125,142 @@ export interface CommitOptions {
   tlsVerify?: boolean
 }
 
+export interface ConfigOptions {
+  /**
+   *
+   */
+  addHistory?: boolean
+
+  /**
+   * Add an image annotation (e.g. `annotation=value`) to the image metadata. Can be used multiple times.
+   *
+   * **Note:** this information is not present in Docker image formats, so it is discarded when writing images in Docker formats.
+   */
+  annotation?: string[]
+
+  /**
+   * Set the ARCH of the image to be pulled to the provided value instead of using the architecture of the host.
+   *
+   * Examples: `aarch64`, `arm`, `i686`, `ppc64le`, `s390x`, `x86_64`
+   */
+  arch?: string
+
+  /**
+   *
+   */
+  author?: string
+
+  /**
+   *
+   */
+  cmd?: string
+
+  /**
+   *
+   */
+  comment?: string
+
+  /**
+   *
+   */
+  createdBy?: string
+
+  /**
+   *
+   */
+  domainName?: string
+
+  /**
+   *
+   */
+  entrypoint?: string
+
+  /**
+   *
+   */
+  env?: string[]
+
+  /**
+   *
+   */
+  healthcheck?: string
+
+  /**
+   *
+   */
+  healthcheckInterval?: string
+
+  /**
+   *
+   */
+  healthcheckRetries?: number
+
+  /**
+   *
+   */
+  healthcheckStartPeriod?: string
+
+  /**
+   *
+   */
+  healthcheckTimeout?: string
+
+  /**
+   *
+   */
+  historyComment?: string
+
+  /**
+   * Set the hostname inside of the running container.
+   */
+  hostname?: string
+
+  /**
+   *
+   */
+  label?: string[]
+
+  /**
+   *
+   */
+  onbuild?: string[]
+
+  /**
+   * Set the OS of the image to be pulled to the provided value instead of using the current operating system of the host.
+   */
+  os?: string
+
+  /**
+   *
+   */
+  ports?: string[]
+
+  /**
+   *
+   */
+  shell?: string
+
+  /**
+   *
+   */
+  stopSignal?: string
+
+  /**
+   * Set the user to be used for running the command in the container. The user can be specified as a user name or UID, optionally followed by a group name or GID, separated by a colon (`:`). If names are used, the container should include entries for those names in its `/etc/passwd` and `/etc/group` files.
+   */
+  user?: string
+
+  /**
+   *
+   */
+  volume?: string[]
+
+  /**
+   *
+   */
+  workingDir?: string
+}
+
 export interface FromOptions {
   /**
    * Path of the authentication file. Default is `${XDG_RUNTIME_DIR}/containers/auth.json`. If `XDG_RUNTIME_DIR` is not set, the default is `/run/containers/$UID/auth.json`.

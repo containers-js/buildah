@@ -43,6 +43,35 @@ const types = {
     {def: 'tlsVerify?: boolean', doc: 'tlsVerify'},
   ],
 
+  ConfigOptions: [
+    {def: 'addHistory?: boolean', doc: 'addHistory'}, //, "add-history",
+    {def: 'annotation?: string[]', doc: 'annotation'}, //, "annotation", "a
+    {def: 'arch?: string', doc: 'arch'}, //, "arch", "",
+    {def: 'author?: string', doc: 'author'}, //, "author", "",
+    {def: 'cmd?: string', doc: 'cmd'}, //, "cmd", "",
+    {def: 'comment?: string', doc: 'comment'}, //, "comment", "",
+    {def: 'createdBy?: string', doc: 'createdBy'}, //, "created-by",
+    {def: 'domainName?: string', doc: 'domainName'}, //, "domainname", "",
+    {def: 'entrypoint?: string', doc: 'entrypoint'}, //, "entrypoint", "",
+    {def: 'env?: string[]', doc: 'env'}, //, "env", "e
+    {def: 'healthcheck?: string', doc: 'healthcheck'}, //, "healthcheck", "",
+    {def: 'healthcheckInterval?: string', doc: 'healthcheckInterval'}, //, "healthcheck-interval",
+    {def: 'healthcheckRetries?: number', doc: 'healthcheckRetries'}, //, "healthcheck-retries",
+    {def: 'healthcheckStartPeriod?: string', doc: 'healthcheckStartPeriod'}, //, "healthcheck-start-period
+    {def: 'healthcheckTimeout?: string', doc: 'healthcheckTimeout'}, //, "healthcheck-timeout",
+    {def: 'historyComment?: string', doc: 'historyComment'}, //, "history-comment",
+    {def: 'hostname?: string', doc: 'hostname'}, //, "hostname", "",
+    {def: 'label?: string[]', doc: 'label'}, //, "label", "l
+    {def: 'onbuild?: string[]', doc: 'onbuild'}, //, "onbuild", []
+    {def: 'os?: string', doc: 'os'}, //, "os", "",
+    {def: 'ports?: string[]', doc: 'ports'}, //, "port", "p
+    {def: 'shell?: string', doc: 'shell'}, //, "shell", "",
+    {def: 'stopSignal?: string', doc: 'stopSignal'}, //, "stop-signal",
+    {def: 'user?: string', doc: 'user'}, //, "user", "u
+    {def: 'volume?: string[]', doc: 'volume'}, //, "volume", "v
+    {def: 'workingDir?: string', doc: 'workingDir'}, //, "workingdir", "",
+  ],
+
   FromOptions: [
     {def: 'authfile?: string', doc: 'authfile'},
     {def: 'certDir?: string', doc: 'certDir'},
@@ -96,7 +125,7 @@ const types = {
   ],
 
   RunOptions: [
-    {def: 'addHistory?: boolean', doc: 'addHistory'},
+    {def: 'addHistory?: boolean', doc: 'addHistory_run'},
     {def: 'capAdd?: string[]', doc: 'capAdd'},
     {def: 'capDrop?: string[]', doc: 'capDrop'},
     {def: 'hostname?: string', doc: 'hostname'},

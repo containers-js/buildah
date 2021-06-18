@@ -2,7 +2,19 @@
 
 Below is a mapping to Buildah common options and their TSDoc documentation. They are used by `script/generate-types.js`.
 
-# @addHistory
+# @addHistory_config
+
+Add an entry to the image's history which will note changes to the settings for `cmd`, `entrypoint`, `env`, `healthcheck`, `label`, `onbuild`, `port`, `shell`, `stopSignal`, `user`, `volume`, and `workingdir`. Defaults to `false`.
+
+**Note:** You can also override the default value of --add-history by setting the BUILDAH_HISTORY environment variable.
+
+```shell
+export BUILDAH_HISTORY=true
+```
+
+@default false
+
+# @addHistory_run
 
 Add an entry to the history which will note what command is being invoked.
 
