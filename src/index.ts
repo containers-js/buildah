@@ -1,6 +1,7 @@
 import execa from 'execa'
+import {AddCommand} from './commands/AddCommand'
+import {BudCommand, BudOptions} from './commands/BudCommand'
 import {
-  addCommand,
   commitCommand,
   configCommand,
   copyCommand,
@@ -24,12 +25,22 @@ export class Buildah {
   command: string
   globalOptions: string[] = []
 
+  #addCommand: AddCommand
+  #budCommand: BudCommand
+
   constructor(options: GlobalOptions = {}) {
     this.command = options.buildahCommand ?? 'buildah'
+
+    this.#addCommand = new AddCommand(this.command)
+    this.#budCommand = new BudCommand(this.command)
   }
 
   async add(container: string, src: string, dest: string, options: AddOptions = {}) {
-    await addCommand.exec(this.command, options, container, src, dest)
+    await this.#addCommand.exec(this.command, options, container, src, dest)
+  }
+
+  async bud(_: string, options: BudOptions) {
+    return await this.#budCommand.exec(this.command, options)
   }
 
   /**

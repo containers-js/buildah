@@ -6,7 +6,8 @@
     "email": "jacobwgillespie@gmail.com"
   },
   "license": "MIT",
-  "main": "./dist/index.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
@@ -18,7 +19,8 @@
   },
   "dependencies": {
     "execa": "^5.1.1",
-    "tempy": "^1.0.1"
+    "tempy": "^1.0.1",
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@tsconfig/node14": "^1.0.1",
@@ -31,6 +33,9 @@
     "prettier": "^2.3.1",
     "prettier-plugin-organize-imports": "^2.1.0",
     "prettier-plugin-pkg": "^0.9.0",
+    "rollup": "^2.52.1",
+    "rollup-plugin-dts": "^3.0.2",
+    "rollup-plugin-typescript2": "^0.30.0",
     "ts-node": "^10.0.0",
     "typedoc": "^0.21.0-beta.4",
     "typescript": "^4.3.2"
