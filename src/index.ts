@@ -1,46 +1,39 @@
 import execa from 'execa'
-import {AddCommand} from './commands/AddCommand'
+import {AddCommand, AddOptions} from './commands/AddCommand'
 import {BudCommand, BudOptions} from './commands/BudCommand'
-import {
-  commitCommand,
-  configCommand,
-  copyCommand,
-  fromCommand,
-  listContainers,
-  listImages,
-  unshare,
-} from './internal/commands'
-import {
-  AddOptions,
-  CommitOptions,
-  ConfigOptions,
-  CopyOptions,
-  ListContainersOptions,
-  ListImagesOptions,
-  UnshareOptions,
-} from './internal/types'
-import {Container, FromOptions, GlobalOptions, Image} from './types'
+import {CommitCommand, CommitOptions} from './commands/CommitCommand'
+import {ConfigCommand, ConfigOptions} from './commands/ConfigCommand'
+import {ContainersCommand, ListContainersOptions} from './commands/ContainersCommand'
+import {CopyCommand, CopyOptions} from './commands/CopyCommand'
+import {FromCommand, FromOptions} from './commands/FromCommand'
+import {ImagesCommand, ListImagesOptions} from './commands/ImagesCommand'
+import {UnshareCommand, UnshareOptions} from './commands/UnshareCommand'
+import {Container, GlobalOptions, Image} from './types'
+
+const addCommand = new AddCommand()
+const budCommand = new BudCommand()
+const commitCommand = new CommitCommand()
+const configCommand = new ConfigCommand()
+const containersCommand = new ContainersCommand()
+const copyCommand = new CopyCommand()
+const fromCommand = new FromCommand()
+const imagesCommand = new ImagesCommand()
+const unshareCommand = new UnshareCommand()
 
 export class Buildah {
   command: string
   globalOptions: string[] = []
 
-  #addCommand: AddCommand
-  #budCommand: BudCommand
-
   constructor(options: GlobalOptions = {}) {
     this.command = options.buildahCommand ?? 'buildah'
-
-    this.#addCommand = new AddCommand(this.command)
-    this.#budCommand = new BudCommand(this.command)
   }
 
   async add(container: string, src: string, dest: string, options: AddOptions = {}) {
-    await this.#addCommand.exec(this.command, options, container, src, dest)
+    await addCommand.exec(this.command, options, container, src, dest)
   }
 
   async bud(_: string, options: BudOptions) {
-    return await this.#budCommand.exec(this.command, options)
+    return await budCommand.exec(this.command, options)
   }
 
   /**
@@ -116,7 +109,7 @@ export class Buildah {
    * @returns A list of Buildah containers
    */
   async listContainers(options: ListContainersOptions = {}): Promise<Container[]> {
-    const cmd = await listContainers.exec(this.command, options)
+    const cmd = await containersCommand.exec(this.command, options)
     if (cmd.stdout.trim() === 'null') return []
     return JSON.parse(cmd.stdout)
   }
@@ -128,7 +121,7 @@ export class Buildah {
    * @returns A list of images in local storage
    */
   async listImages(options: ListImagesOptions = {}): Promise<Image[]> {
-    const cmd = await listImages.exec(this.command, options, '--no-trunc')
+    const cmd = await imagesCommand.exec(this.command, options, '--no-trunc')
     if (cmd.stdout.trim() === 'null') return []
     return JSON.parse(cmd.stdout)
   }
@@ -161,7 +154,7 @@ export class Buildah {
   }
 
   async unshare(options: UnshareOptions = {}) {
-    await unshare.exec(this.command, options)
+    await unshareCommand.exec(this.command, options)
   }
 }
 

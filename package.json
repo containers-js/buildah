@@ -10,12 +10,13 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rollup -c",
     "clean": "rm -rf dist",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
     "generate-types": "node generate-types.js > src/types.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "watch": "rollup -c --watch"
   },
   "dependencies": {
     "execa": "^5.1.1",
