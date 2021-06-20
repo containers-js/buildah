@@ -1,4 +1,3 @@
-import execa from 'execa'
 import {AddCommand, AddOptions} from './commands/AddCommand'
 import {BudCommand, BudOptions} from './commands/BudCommand'
 import {CommitCommand, CommitOptions} from './commands/CommitCommand'
@@ -7,6 +6,8 @@ import {ContainersCommand, ListContainersOptions} from './commands/ContainersCom
 import {CopyCommand, CopyOptions} from './commands/CopyCommand'
 import {FromCommand, FromOptions} from './commands/FromCommand'
 import {ImagesCommand, ListImagesOptions} from './commands/ImagesCommand'
+import {RmCommand} from './commands/RmCommand'
+import {TagCommand} from './commands/TagCommand'
 import {UnshareCommand, UnshareOptions} from './commands/UnshareCommand'
 import {Container, GlobalOptions, Image} from './types'
 
@@ -18,6 +19,8 @@ const containersCommand = new ContainersCommand()
 const copyCommand = new CopyCommand()
 const fromCommand = new FromCommand()
 const imagesCommand = new ImagesCommand()
+const rmCommand = new RmCommand()
+const tagCommand = new TagCommand()
 const unshareCommand = new UnshareCommand()
 
 export class Buildah {
@@ -28,8 +31,17 @@ export class Buildah {
     this.command = options.buildahCommand ?? 'buildah'
   }
 
-  async add(container: string, src: string, dest: string, options: AddOptions = {}) {
-    await addCommand.exec(this.command, options, container, src, dest)
+  /**
+   * Adds the contents of a file, URL, or a directory to a container's working directory or a specified location in the container. If a local source file appears to be an archive, its contents are extracted and added instead of the archive file itself. If a local directory is specified as a source, its contents are copied to the destination.
+   *
+   * @param container Container ID
+   * @param src One or more sources to copy into the container
+   * @param options Add options
+   */
+  async add(container: string, src: string | string[], options: AddOptions = {}) {
+    const params = Array.isArray(src) ? src : [src]
+    if (options.destination) params.push(options.destination)
+    await addCommand.exec(this.command, options, container, ...params)
   }
 
   async bud(_: string, options: BudOptions) {
@@ -39,13 +51,16 @@ export class Buildah {
   /**
    * Create an image from a working container.
    *
+   * Writes a new image using the specified container's read-write layer and if it is based on an image, the layers of that image. If image does not begin with a registry name component, `localhost` will be added to the name. If image is not provided, the image will have no name. When an image has no name, the buildah images command will display `<none>` in the `REPOSITORY` and `TAG` columns.
+   *
    * @param container ID of the working container
    * @param options Commit options
    * @returns The image ID of the image that was created
    */
   async commit(container: string, options: CommitOptions = {}) {
-    const args = ['commit', ...commitCommand.args(options), container, ...(options.image ? [options.image] : [])]
-    const cmd = await execa(this.command, args)
+    const params = [container]
+    if (options.image) params.push(options.image)
+    const cmd = await commitCommand.exec(this.command, options, ...params)
     return cmd.stdout
   }
 
@@ -58,11 +73,20 @@ export class Buildah {
    * @param options Configuration settings to update
    */
   async config(container: string, options: ConfigOptions = {}) {
-    await execa(this.command, ['config', ...configCommand.args(options), container])
+    await configCommand.exec(this.command, options, container)
   }
 
-  async copy(container: string, src: string, dest: string, options: CopyOptions = {}) {
-    await copyCommand.exec(this.command, options, container, src, dest)
+  /**
+   * Copies the contents of a file, URL, or a directory to a container's working directory or a specified location in the container. If a local directory is specified as a source, its contents are copied to the destination.
+   *
+   * @param container Container ID
+   * @param src One or more sources to copy into the container
+   * @param options Copy options
+   */
+  async copy(container: string, src: string | string[], options: CopyOptions = {}) {
+    const params = Array.isArray(src) ? src : [src]
+    if (options.destination) params.push(options.destination)
+    await copyCommand.exec(this.command, options, container, ...params)
   }
 
   /**
@@ -129,30 +153,42 @@ export class Buildah {
   /**
    * Removes one or more working containers, unmounting them if necessary.
    *
-   * @param containers one or more container IDs to remove
+   * @param container one or more container IDs to remove
    */
-  async rm(container: string, ...additional: string[]) {
-    await execa(this.command, ['rm', container, ...additional])
+  async removeContainer(container: string | string[]) {
+    const params = Array.isArray(container) ? container : [container]
+    await rmCommand.exec(this.command, {}, ...params)
   }
 
   /**
    * Removes all working containers, unmounting them if necessary
    */
-  async rmAll() {
-    await execa(this.command, ['rm', '--all'])
+  async removeAllContainers() {
+    await rmCommand.exec(this.command, {}, '--all')
   }
 
   /**
    * Adds additional names to locally-stored images.
    *
    * @param image Local image name
-   * @param tag Tag to add to the image
-   * @param additionalTags Optional additional tags to add to the image
+   * @param tag One or more tags to add to the image
    */
-  async tag(image: string, tag: string, ...additionalTags: string[]) {
-    await execa(this.command, ['tag', image, tag, ...additionalTags])
+  async tag(image: string, tag: string | string[]) {
+    const tags = Array.isArray(tag) ? tag : [tag]
+    await tagCommand.exec(this.command, {}, image, ...tags)
   }
 
+  /**
+   * Run a command inside of a modified user namespace.
+   *
+   * Launches a process (by default, `$SHELL`) in a new user namespace. The user namespace is configured so that the invoking user's UID and primary GID appear to be UID 0 and GID 0, respectively. Any ranges which match that user and group in `/etc/subuid` and `/etc/subgid` are also mapped in as themselves with the help of the newuidmap(1) and newgidmap(1) helpers.
+   *
+   * buildah unshare is useful for troubleshooting unprivileged operations and for manually clearing storage and other data related to images and containers.
+   *
+   * It is also useful if you want to use the `buildah mount` command. If an unprivileged users wants to mount and work with a container, then they need to execute buildah unshare. Executing buildah mount fails for unprivileged users unless the user is running inside a buildah unshare session.
+   *
+   * @param options Unshare options
+   */
   async unshare(options: UnshareOptions = {}) {
     await unshareCommand.exec(this.command, options)
   }

@@ -1,6 +1,9 @@
 import {booleanFlag, Command, numberArrayFlag, numberFlag, stringArrayFlag, stringFlag} from './Command'
 
 export interface CommitOptions {
+  /**
+   * Name of the new image to create. If image does not begin with a registry name component, `localhost` will be added to the name.
+   */
   image?: string
 
   /**

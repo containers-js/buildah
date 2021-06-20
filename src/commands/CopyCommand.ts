@@ -1,6 +1,11 @@
-import {booleanFlag, Command, stringArrayFlag, stringFlag} from './Command'
+import {booleanFlag, Command, stringArrayFlag, stringFlag, virtualFlag} from './Command'
 
 export interface CopyOptions {
+  /**
+   * If supplied, add to specified destination rather than the container's working directory
+   */
+  destination?: string
+
   /**
    * Add an entry to the history which will note the digest of the added content. Defaults to false.
    *
@@ -54,6 +59,8 @@ export interface CopyOptions {
 export class CopyCommand extends Command<CopyOptions> {
   name = 'copy'
   flags = {
+    destination: virtualFlag(),
+
     addHistory: booleanFlag('--add-history'),
     authfile: stringFlag('--authfile'),
     blobCache: stringFlag('--blob-cache'),

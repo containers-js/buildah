@@ -1,6 +1,11 @@
-import {booleanFlag, Command, stringArrayFlag, stringFlag} from './Command'
+import {booleanFlag, Command, stringArrayFlag, stringFlag, virtualFlag} from './Command'
 
 export interface AddOptions {
+  /**
+   * If supplied, add to specified destination rather than the container's working directory
+   */
+  destination?: string
+
   /**
    * Add an entry to the history which will note the digest of the added content. Defaults to false.
    *
@@ -88,6 +93,8 @@ export interface AddOptions {
 export class AddCommand extends Command<AddOptions> {
   name = 'add'
   flags = {
+    destination: virtualFlag(),
+
     addHistory: booleanFlag('--add-history'),
     authfile: stringFlag('--authfile'),
     blobCache: stringFlag('--blob-cache'),

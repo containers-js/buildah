@@ -40,7 +40,7 @@ export interface Flag<Type, Required extends boolean> {
 }
 
 export type FlagsFor<Options extends Record<string, any>> = {
-  [K in keyof Options]: undefined extends Options[K] ? Flag<Options[K], boolean> : Flag<Options[K], true>
+  [K in keyof Options]-?: undefined extends Options[K] ? Flag<Options[K], boolean> : Flag<Options[K], true>
 }
 
 export function booleanFlag<Required extends boolean>(
@@ -100,5 +100,14 @@ export function stringArrayFlag<Required extends boolean>(
     name,
     required,
     args: (v) => (name && v ? v.flatMap((i) => [name, i]) : []),
+  }
+}
+
+export function virtualFlag<Required extends boolean>(required?: Required): Flag<any, Required> {
+  return {
+    type: 'any',
+    name: false,
+    required,
+    args: () => [],
   }
 }
