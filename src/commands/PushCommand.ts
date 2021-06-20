@@ -1,6 +1,22 @@
-import {booleanFlag, Command, numberArrayFlag, stringArrayFlag, stringFlag} from './Command'
+import {booleanFlag, Command, numberArrayFlag, stringArrayFlag, stringFlag, virtualFlag} from './Command'
 
 export interface PushOptions {
+  /**
+   * The destination location to store a container image. If omitted, the source image parameter will be reused as destination.
+   *
+   * The destination uses a `transport:details` format. Multiple transports are supported:
+   *
+   * - `docker://docker-reference` (Default) An image in a registry implementing the "Docker Registry HTTP API V2". By default, uses the authorization state in $XDG\_RUNTIME\_DIR/containers/auth.json, which is set using (buildah login). If XDG_RUNTIME_DIR is not set, the default is /run/containers/$UID/auth.json. If the authorization state is not found there, $HOME/.docker/config.json is checked, which is set using (docker login). If docker-reference does not include a registry name, localhost will be consulted first, followed by any registries named in the registries configuration.
+   * - `dir:path` An existing local directory path containing the manifest, layer tarballs, and signatures in individual files. This is a non-standardized format, primarily useful for debugging or noninvasive image inspection.
+   * - `docker-archive:path` An image is retrieved as a docker load formatted file.
+   * - `docker-daemon:docker-reference` An image docker-reference stored in the docker daemon's internal storage. docker-reference must include either a tag or a digest. Alternatively, when reading images, the format can also be docker-daemon:algo:digest (an image ID).
+   * - `oci:path:tag` An image tag in a directory compliant with "Open Container Image Layout Specification" at path.
+   * - `oci-archive:path:tag` An image tag in a directory compliant with "Open Container Image Layout Specification" at path.
+   *
+   * If the `transport` part of the destination is omitted, "docker://" is assumed.
+   */
+  destination?: string
+
   /**
    * If specified image is a manifest list or image index, push the images in addition to the list or index itself.
    */
@@ -85,6 +101,8 @@ export interface PushOptions {
 export class PushCommand extends Command<PushOptions> {
   name = 'push'
   flags = {
+    destination: virtualFlag(),
+
     all: booleanFlag('--all'),
     authfile: stringFlag('--authfile'),
     blobCache: stringFlag('--blob-cache'),
