@@ -95,6 +95,9 @@ const layerFlags = {
     forceRemove: booleanFlag('--force-rm'),
     layers: booleanFlag('--layers'),
 };
+const userFlags = {
+    user: stringFlag('user'),
+};
 const userNSFlags = {
     userNS: stringFlag('--userns'),
     userNSUIDMap: stringArrayFlag('--userns-uid-map'),
@@ -407,6 +410,28 @@ class RmiCommand extends Command {
     }
 }
 
+class RunCommand extends Command {
+    constructor() {
+        super(...arguments);
+        this.name = 'run';
+        this.flags = {
+            addHistory: booleanFlag('--add-history'),
+            capAdd: stringArrayFlag('--cap-add'),
+            capDrop: stringArrayFlag('--cap-drop'),
+            hostname: stringFlag('--hostname'),
+            isolation: stringFlag('--isolation'),
+            runtime: stringFlag('--runtime'),
+            runtimeFlag: stringArrayFlag('--runtime-flag'),
+            noPivot: booleanFlag('--no-pivot'),
+            tty: booleanFlag('--terminal'),
+            volumes: stringArrayFlag('--volume'),
+            mounts: stringArrayFlag('--mount'),
+            ...userFlags,
+            ...namespaceFlags,
+        };
+    }
+}
+
 class TagCommand extends Command {
     constructor() {
         super(...arguments);
@@ -447,6 +472,7 @@ const pushCommand = new PushCommand();
 const renameCommand = new RenameCommand();
 const rmCommand = new RmCommand();
 const rmiCommand = new RmiCommand();
+const runCommand = new RunCommand();
 const tagCommand = new TagCommand();
 const unmountCommand = new UnmountCommand();
 const unshareCommand = new UnshareCommand();
@@ -690,6 +716,19 @@ class Buildah {
      */
     async renameContainer(currentName, newName) {
         await renameCommand.exec(this.command, {}, currentName, newName);
+    }
+    /**
+     * Run a command inside of the container.
+     *
+     * Launches a container and runs the specified command in that container using the container's root filesystem as a root filesystem, using configuration settings inherited from the container's image or as specified using previous calls to the buildah config command. To execute buildah run within an interactive shell, specify the `tty` option.
+     *
+     * @param container Container name or ID
+     * @param command Command and optional arguments to execute inside the container
+     * @param options Run options
+     */
+    async run(container, command, options = {}) {
+        const params = Array.isArray(command) ? command : [command];
+        await runCommand.exec(this.command, options, container, '--', ...params);
     }
     /**
      * Adds additional names to locally-stored images.

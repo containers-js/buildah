@@ -12,6 +12,7 @@ import {PushCommand, PushOptions} from './commands/PushCommand'
 import {RenameCommand} from './commands/RenameCommand'
 import {RmCommand} from './commands/RmCommand'
 import {RemoveImageOptions, RmiCommand} from './commands/RmiCommand'
+import {RunCommand, RunOptions} from './commands/RunCommand'
 import {TagCommand} from './commands/TagCommand'
 import {UnmountCommand} from './commands/UnmountCommand'
 import {UnshareCommand, UnshareOptions} from './commands/UnshareCommand'
@@ -31,6 +32,7 @@ const pushCommand = new PushCommand()
 const renameCommand = new RenameCommand()
 const rmCommand = new RmCommand()
 const rmiCommand = new RmiCommand()
+const runCommand = new RunCommand()
 const tagCommand = new TagCommand()
 const unmountCommand = new UnmountCommand()
 const unshareCommand = new UnshareCommand()
@@ -288,6 +290,20 @@ export class Buildah {
    */
   async renameContainer(currentName: string, newName: string) {
     await renameCommand.exec(this.command, {}, currentName, newName)
+  }
+
+  /**
+   * Run a command inside of the container.
+   *
+   * Launches a container and runs the specified command in that container using the container's root filesystem as a root filesystem, using configuration settings inherited from the container's image or as specified using previous calls to the buildah config command. To execute buildah run within an interactive shell, specify the `tty` option.
+   *
+   * @param container Container name or ID
+   * @param command Command and optional arguments to execute inside the container
+   * @param options Run options
+   */
+  async run(container: string, command: string | string, options: RunOptions = {}) {
+    const params = Array.isArray(command) ? command : [command]
+    await runCommand.exec(this.command, options, container, '--', ...params)
   }
 
   /**
