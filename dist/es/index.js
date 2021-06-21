@@ -458,6 +458,14 @@ class UnshareCommand extends Command {
     }
 }
 
+class VersionCommand extends Command {
+    constructor() {
+        super(...arguments);
+        this.name = 'version';
+        this.flags = {};
+    }
+}
+
 const addCommand = new AddCommand();
 const budCommand = new BudCommand();
 const commitCommand = new CommitCommand();
@@ -770,7 +778,6 @@ class Buildah {
         await unshareCommand.exec(this.command, options);
     }
 }
-const buildah = new Buildah();
 
-export { Buildah, buildah };
+export { AddCommand, BudCommand, Buildah, Command, CommitCommand, ConfigCommand, ContainersCommand, CopyCommand, FromCommand, ImagesCommand, MountCommand, PullCommand, PushCommand, RenameCommand, RmCommand, RmiCommand, RunCommand, TagCommand, UnmountCommand, UnshareCommand, VersionCommand, booleanFlag, fromAndBudFlags, layerFlags, namespaceFlags, numberArrayFlag, numberFlag, stringArrayFlag, stringFlag, userFlags, userNSFlags, virtualFlag };
 //# sourceMappingURL=index.js.map

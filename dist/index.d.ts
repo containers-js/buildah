@@ -1,4 +1,38 @@
 import * as execa from 'execa';
+import execa__default from 'execa';
+
+declare abstract class Command<Options extends Record<string, any>> {
+    abstract name: string;
+    abstract flags: FlagsFor<Options>;
+    /**
+     * Path to the `buildah` binary, defaults to `buildah` (find Buildah via `PATH`)
+     *
+     * @default 'buildah'
+     */
+    binary: string;
+    /**
+     * @param binary Path to the `buildah` binary, defaults to `buildah` (find Buildah via `PATH`)
+     */
+    constructor(binary?: string);
+    args(options: Options): string[];
+    /** this is the exec */
+    exec: (file: string, options: Options, ...args: string[]) => Promise<execa__default.ExecaReturnValue<string>>;
+}
+interface Flag<Type, Required extends boolean> {
+    type: string;
+    name: string | false;
+    required?: Required;
+    args(value?: Type): string[];
+}
+declare type FlagsFor<Options extends Record<string, any>> = {
+    [K in keyof Options]-?: undefined extends Options[K] ? Flag<Options[K], boolean> : Flag<Options[K], true>;
+};
+declare function booleanFlag<Required extends boolean>(name: string | false, required?: Required): Flag<boolean, Required>;
+declare function numberFlag<Required extends boolean>(name: string | false, required?: Required): Flag<number, Required>;
+declare function numberArrayFlag<Required extends boolean>(name: string | false, required?: Required): Flag<number[], Required>;
+declare function stringFlag<Required extends boolean>(name: string | false, required?: Required): Flag<string, Required>;
+declare function stringArrayFlag<Required extends boolean>(name: string | false, required?: Required): Flag<string[], Required>;
+declare function virtualFlag<Required extends boolean>(required?: Required): Flag<any, Required>;
 
 interface AddOptions {
     /**
@@ -74,6 +108,27 @@ interface AddOptions {
      */
     tlsVerify?: boolean;
 }
+declare class AddCommand extends Command<AddOptions> {
+    name: string;
+    flags: {
+        destination: Flag<any, boolean>;
+        addHistory: Flag<boolean, boolean>;
+        authfile: Flag<string, boolean>;
+        blobCache: Flag<string, boolean>;
+        certDir: Flag<string, boolean>;
+        chown: Flag<string, boolean>;
+        chmod: Flag<string, boolean>;
+        creds: Flag<string, boolean>;
+        from: Flag<string, boolean>;
+        decryptionKeys: Flag<string[], boolean>;
+        ignoreFile: Flag<string, boolean>;
+        contextdir: Flag<string, boolean>;
+        quiet: Flag<boolean, boolean>;
+        tlsVerify: Flag<boolean, boolean>;
+        removeSignatures: Flag<boolean, boolean>;
+        signaturePolicy: Flag<string, boolean>;
+    };
+}
 
 interface LayerOptions {
     /**
@@ -91,12 +146,14 @@ interface LayerOptions {
      */
     layers?: boolean;
 }
+declare const layerFlags: FlagsFor<LayerOptions>;
 interface UserOptions {
     /**
      * Set the user to be used for running the command in the container. The user can be specified as a user name or UID, optionally followed by a group name or GID, separated by a colon (`:`). If names are used, the container should include entries for those names in its `/etc/passwd` and `/etc/group` files.
      */
     user?: string;
 }
+declare const userFlags: FlagsFor<UserOptions>;
 interface UserNSOptions {
     /**
      * Sets the configuration for user namespaces when handling RUN instructions. The configured value can be:
@@ -150,6 +207,7 @@ interface UserNSOptions {
      */
     userNSGIDMapGroup?: string;
 }
+declare const userNSFlags: FlagsFor<UserNSOptions>;
 interface NamespaceOptions {
     /**
      * Sets the configuration for IPC namespaces when handling RUN instructions. The configured value can be:
@@ -195,6 +253,7 @@ interface NamespaceOptions {
      */
     uts?: string;
 }
+declare const namespaceFlags: FlagsFor<NamespaceOptions>;
 interface FromAndBudOptions extends UserNSOptions, NamespaceOptions {
     /**
      * Add a custom host-to-IP mapping (`host:ip`)
@@ -376,6 +435,7 @@ interface FromAndBudOptions extends UserNSOptions, NamespaceOptions {
      */
     volumes?: string[];
 }
+declare const fromAndBudFlags: FlagsFor<FromAndBudOptions>;
 
 interface BudOptions extends LayerOptions, FromAndBudOptions {
     /**
@@ -560,6 +620,87 @@ interface BudOptions extends LayerOptions, FromAndBudOptions {
      */
     tlsVerify?: boolean;
 }
+declare class BudCommand extends Command<BudOptions> {
+    name: string;
+    flags: {
+        addHost: Flag<string[] | undefined, boolean>;
+        arch: Flag<string | undefined, boolean>;
+        blobCache: Flag<string | undefined, boolean>;
+        capAdd: Flag<string[] | undefined, boolean>;
+        capDrop: Flag<string[] | undefined, boolean>;
+        cgroupParent: Flag<string | undefined, boolean>;
+        cpuPeriod: Flag<number | undefined, boolean>;
+        cpuQuota: Flag<number | undefined, boolean>;
+        cpuSetCPUs: Flag<string | undefined, boolean>;
+        cpuSetMems: Flag<string | undefined, boolean>;
+        cpuShares: Flag<number | undefined, boolean>;
+        decryptionKeys: Flag<string[] | undefined, boolean>;
+        devices: Flag<string[] | undefined, boolean>;
+        dnsOptions: Flag<string[] | undefined, boolean>;
+        dnsSearch: Flag<string[] | undefined, boolean>;
+        dnsServers: Flag<string[] | undefined, boolean>;
+        httpProxy: Flag<boolean | undefined, boolean>;
+        isolation: Flag<string | undefined, boolean>;
+        memory: Flag<string | undefined, boolean>;
+        memorySwap: Flag<string | undefined, boolean>;
+        os: Flag<string | undefined, boolean>;
+        securityOpt: Flag<string[] | undefined, boolean>;
+        shmSize: Flag<string | undefined, boolean>;
+        ulimit: Flag<string[] | undefined, boolean>;
+        variant: Flag<string | undefined, boolean>;
+        volumes: Flag<string[] | undefined, boolean>;
+        userNS: Flag<string | undefined, boolean>;
+        userNSUIDMap: Flag<string[] | undefined, boolean>;
+        userNSGIDMap: Flag<string[] | undefined, boolean>;
+        userNSUIDMapUser: Flag<string | undefined, boolean>;
+        userNSGIDMapGroup: Flag<string | undefined, boolean>;
+        ipc: Flag<string | undefined, boolean>;
+        network: Flag<string | undefined, boolean>;
+        cniConfigDir: Flag<string | undefined, boolean>;
+        cniPlugInPath: Flag<string | undefined, boolean>;
+        pid: Flag<string | undefined, boolean>;
+        uts: Flag<string | undefined, boolean>;
+        forceRemove: Flag<boolean | undefined, boolean>;
+        layers: Flag<boolean | undefined, boolean>;
+        annotation: Flag<string, boolean>;
+        authfile: Flag<string, boolean>;
+        buildArg: Flag<string, boolean>;
+        cacheFrom: Flag<string, boolean>;
+        certDir: Flag<string, boolean>;
+        compress: Flag<boolean, boolean>;
+        creds: Flag<string, boolean>;
+        disableCompression: Flag<boolean, boolean>;
+        disableContentTrust: Flag<boolean, boolean>;
+        from: Flag<string, boolean>;
+        ignoreFile: Flag<string, boolean>;
+        file: Flag<string[], boolean>;
+        format: Flag<string, boolean>;
+        iidfile: Flag<string, boolean>;
+        jobs: Flag<number, boolean>;
+        label: Flag<string, boolean>;
+        logfile: Flag<string, boolean>;
+        loglevel: Flag<number, boolean>;
+        logRusage: Flag<boolean, boolean>;
+        manifest: Flag<string, boolean>;
+        noCache: Flag<boolean, boolean>;
+        platform: Flag<string, boolean>;
+        pull: Flag<boolean, boolean>;
+        pullAlways: Flag<boolean, boolean>;
+        pullNever: Flag<boolean, boolean>;
+        quiet: Flag<boolean, boolean>;
+        rm: Flag<boolean, boolean>;
+        runtimeFlags: Flag<string[], boolean>;
+        secrets: Flag<string, boolean>;
+        signBy: Flag<string, boolean>;
+        signaturePolicy: Flag<string, boolean>;
+        squash: Flag<boolean, boolean>;
+        stdin: Flag<boolean, boolean>;
+        tag: Flag<string, boolean>;
+        target: Flag<string, boolean>;
+        timestamp: Flag<number, boolean>;
+        tlsVerify: Flag<boolean, boolean>;
+    };
+}
 
 interface CommitOptions {
     /**
@@ -641,6 +782,31 @@ interface CommitOptions {
      * Require HTTPS and verification of certificates when talking to container registries (defaults to true). TLS verification cannot be used when talking to an insecure registry.
      */
     tlsVerify?: boolean;
+}
+declare class CommitCommand extends Command<CommitOptions> {
+    name: string;
+    flags: {
+        image: Flag<string, boolean>;
+        authfile: Flag<string, boolean>;
+        blobCache: Flag<string, boolean>;
+        encryptionKeys: Flag<string[], boolean>;
+        encryptLayers: Flag<number[], boolean>;
+        certDir: Flag<string, boolean>;
+        creds: Flag<string, boolean>;
+        disableCompression: Flag<boolean, boolean>;
+        format: Flag<string, boolean>;
+        manifest: Flag<string, boolean>;
+        iidfile: Flag<string, boolean>;
+        omitTimestamp: Flag<boolean, boolean>;
+        timestamp: Flag<number, boolean>;
+        quiet: Flag<boolean, boolean>;
+        referenceTime: Flag<string, boolean>;
+        signBy: Flag<string, boolean>;
+        rm: Flag<boolean, boolean>;
+        signaturePolicy: Flag<string, boolean>;
+        squash: Flag<boolean, boolean>;
+        tlsVerify: Flag<boolean, boolean>;
+    };
 }
 
 interface ConfigOptions {
@@ -781,6 +947,37 @@ interface ConfigOptions {
      */
     workingDir?: string;
 }
+declare class ConfigCommand extends Command<ConfigOptions> {
+    name: string;
+    flags: {
+        addHistory: Flag<boolean, boolean>;
+        annotation: Flag<string[], boolean>;
+        arch: Flag<string, boolean>;
+        author: Flag<string, boolean>;
+        cmd: Flag<string, boolean>;
+        comment: Flag<string, boolean>;
+        createdBy: Flag<string, boolean>;
+        domainName: Flag<string, boolean>;
+        entrypoint: Flag<string, boolean>;
+        env: Flag<string[], boolean>;
+        healthcheck: Flag<string, boolean>;
+        healthcheckInterval: Flag<string, boolean>;
+        healthcheckRetries: Flag<number, boolean>;
+        healthcheckStartPeriod: Flag<string, boolean>;
+        healthcheckTimeout: Flag<string, boolean>;
+        historyComment: Flag<string, boolean>;
+        hostname: Flag<string, boolean>;
+        label: Flag<string[], boolean>;
+        onbuild: Flag<string[], boolean>;
+        os: Flag<string, boolean>;
+        ports: Flag<string[], boolean>;
+        shell: Flag<string, boolean>;
+        stopSignal: Flag<string, boolean>;
+        user: Flag<string, boolean>;
+        volume: Flag<string[], boolean>;
+        workingDir: Flag<string, boolean>;
+    };
+}
 
 interface ListContainersOptions {
     /**
@@ -795,6 +992,13 @@ interface ListContainersOptions {
      * - `ancestor` - image or descendant used to create container
      */
     filter?: string;
+}
+declare class ContainersCommand extends Command<ListContainersOptions> {
+    name: string;
+    flags: {
+        all: Flag<boolean, boolean>;
+        filter: Flag<string, boolean>;
+    };
 }
 
 interface CopyOptions {
@@ -844,6 +1048,27 @@ interface CopyOptions {
     removeSignatures?: boolean;
     signaturePolicy?: string;
     tlsVerify?: boolean;
+}
+declare class CopyCommand extends Command<CopyOptions> {
+    name: string;
+    flags: {
+        destination: Flag<any, boolean>;
+        addHistory: Flag<boolean, boolean>;
+        authfile: Flag<string, boolean>;
+        blobCache: Flag<string, boolean>;
+        certDir: Flag<string, boolean>;
+        chown: Flag<string, boolean>;
+        chmod: Flag<string, boolean>;
+        creds: Flag<string, boolean>;
+        from: Flag<string, boolean>;
+        decryptionKeys: Flag<string[], boolean>;
+        ignoreFile: Flag<string, boolean>;
+        contextdir: Flag<string, boolean>;
+        quiet: Flag<boolean, boolean>;
+        tlsVerify: Flag<boolean, boolean>;
+        removeSignatures: Flag<boolean, boolean>;
+        signaturePolicy: Flag<string, boolean>;
+    };
 }
 
 interface FromOptions {
@@ -909,6 +1134,60 @@ interface FromOptions {
      */
     tlsVerify?: boolean;
 }
+declare class FromCommand extends Command<FromOptions> {
+    name: string;
+    flags: {
+        addHost: Flag<string[] | undefined, boolean>;
+        arch: Flag<string | undefined, boolean>;
+        blobCache: Flag<string | undefined, boolean>;
+        capAdd: Flag<string[] | undefined, boolean>;
+        capDrop: Flag<string[] | undefined, boolean>;
+        cgroupParent: Flag<string | undefined, boolean>;
+        cpuPeriod: Flag<number | undefined, boolean>;
+        cpuQuota: Flag<number | undefined, boolean>;
+        cpuSetCPUs: Flag<string | undefined, boolean>;
+        cpuSetMems: Flag<string | undefined, boolean>;
+        cpuShares: Flag<number | undefined, boolean>;
+        decryptionKeys: Flag<string[] | undefined, boolean>;
+        devices: Flag<string[] | undefined, boolean>;
+        dnsOptions: Flag<string[] | undefined, boolean>;
+        dnsSearch: Flag<string[] | undefined, boolean>;
+        dnsServers: Flag<string[] | undefined, boolean>;
+        httpProxy: Flag<boolean | undefined, boolean>;
+        isolation: Flag<string | undefined, boolean>;
+        memory: Flag<string | undefined, boolean>;
+        memorySwap: Flag<string | undefined, boolean>;
+        os: Flag<string | undefined, boolean>;
+        securityOpt: Flag<string[] | undefined, boolean>;
+        shmSize: Flag<string | undefined, boolean>;
+        ulimit: Flag<string[] | undefined, boolean>;
+        variant: Flag<string | undefined, boolean>;
+        volumes: Flag<string[] | undefined, boolean>;
+        userNS: Flag<string | undefined, boolean>;
+        userNSUIDMap: Flag<string[] | undefined, boolean>;
+        userNSGIDMap: Flag<string[] | undefined, boolean>;
+        userNSUIDMapUser: Flag<string | undefined, boolean>;
+        userNSGIDMapGroup: Flag<string | undefined, boolean>;
+        ipc: Flag<string | undefined, boolean>;
+        network: Flag<string | undefined, boolean>;
+        cniConfigDir: Flag<string | undefined, boolean>;
+        cniPlugInPath: Flag<string | undefined, boolean>;
+        pid: Flag<string | undefined, boolean>;
+        uts: Flag<string | undefined, boolean>;
+        authfile: Flag<string, boolean>;
+        certDir: Flag<string, boolean>;
+        cidfile: Flag<string, boolean>;
+        creds: Flag<string, boolean>;
+        format: Flag<string, boolean>;
+        name: Flag<string, boolean>;
+        pull: Flag<boolean, boolean>;
+        pullAlways: Flag<boolean, boolean>;
+        pullNever: Flag<boolean, boolean>;
+        quiet: Flag<boolean, boolean>;
+        signaturePolicy: Flag<string, boolean>;
+        tlsVerify: Flag<boolean, boolean>;
+    };
+}
 
 interface ListImagesOptions {
     /**
@@ -923,6 +1202,14 @@ interface ListImagesOptions {
      * Do not truncate output.
      */
     noTruncate?: boolean;
+}
+declare class ImagesCommand extends Command<ListImagesOptions> {
+    name: string;
+    flags: {
+        all: Flag<boolean, boolean>;
+        filter: Flag<string, boolean>;
+        noTruncate: Flag<boolean, boolean>;
+    };
 }
 
 interface PullOptions {
@@ -990,6 +1277,25 @@ interface PullOptions {
      * Set the architecture variant of the image to be pulled.
      */
     variant?: string;
+}
+declare class PullCommand extends Command<PullOptions> {
+    name: string;
+    flags: {
+        allTags: Flag<boolean, boolean>;
+        authfile: Flag<string, boolean>;
+        blobCache: Flag<string, boolean>;
+        certDir: Flag<string, boolean>;
+        creds: Flag<string, boolean>;
+        pullPolicy: Flag<string, boolean>;
+        removeSignatures: Flag<boolean, boolean>;
+        signaturePolicy: Flag<string, boolean>;
+        decryptionKeys: Flag<string[], boolean>;
+        quiet: Flag<boolean, boolean>;
+        os: Flag<string, boolean>;
+        arch: Flag<string, boolean>;
+        variant: Flag<string, boolean>;
+        tlsVerify: Flag<boolean, boolean>;
+    };
 }
 
 interface PushOptions {
@@ -1075,12 +1381,38 @@ interface PushOptions {
      */
     tlsVerify?: boolean;
 }
+declare class PushCommand extends Command<PushOptions> {
+    name: string;
+    flags: {
+        destination: Flag<any, boolean>;
+        all: Flag<boolean, boolean>;
+        authfile: Flag<string, boolean>;
+        blobCache: Flag<string, boolean>;
+        certDir: Flag<string, boolean>;
+        creds: Flag<string, boolean>;
+        digestfile: Flag<string, boolean>;
+        disableCompression: Flag<boolean, boolean>;
+        format: Flag<string, boolean>;
+        quiet: Flag<boolean, boolean>;
+        rm: Flag<boolean, boolean>;
+        removeSignatures: Flag<boolean, boolean>;
+        signBy: Flag<string, boolean>;
+        signaturePolicy: Flag<string, boolean>;
+        encryptionKeys: Flag<string[], boolean>;
+        encryptLayers: Flag<number[], boolean>;
+        tlsVerify: Flag<boolean, boolean>;
+    };
+}
 
 interface RemoveImageOptions {
     /**
      * This option will cause Buildah to remove all containers that are using the image before removing the image from the system.
      */
     force?: boolean;
+}
+declare class RmiCommand extends Command<{}> {
+    name: string;
+    flags: {};
 }
 
 interface RunOptions extends UserOptions, NamespaceOptions {
@@ -1163,12 +1495,41 @@ interface RunOptions extends UserOptions, NamespaceOptions {
      */
     volumes?: string[];
 }
+declare class RunCommand extends Command<RunOptions> {
+    name: string;
+    flags: {
+        ipc: Flag<string | undefined, boolean>;
+        network: Flag<string | undefined, boolean>;
+        cniConfigDir: Flag<string | undefined, boolean>;
+        cniPlugInPath: Flag<string | undefined, boolean>;
+        pid: Flag<string | undefined, boolean>;
+        uts: Flag<string | undefined, boolean>;
+        user: Flag<string | undefined, boolean>;
+        addHistory: Flag<boolean, boolean>;
+        capAdd: Flag<string[], boolean>;
+        capDrop: Flag<string[], boolean>;
+        hostname: Flag<string, boolean>;
+        isolation: Flag<string, boolean>;
+        runtime: Flag<string, boolean>;
+        runtimeFlag: Flag<string[], boolean>;
+        noPivot: Flag<boolean, boolean>;
+        tty: Flag<boolean, boolean>;
+        volumes: Flag<string[], boolean>;
+        mounts: Flag<string[], boolean>;
+    };
+}
 
 interface UnshareOptions {
     /**
      * Mount the containerNameOrID container while running command, and set the environment variable VARIABLE to the path of the mountpoint. If VARIABLE is not specified, it defaults to containerNameOrID, which may not be a valid name for an environment variable.
      */
     mounts?: string[];
+}
+declare class UnshareCommand extends Command<UnshareOptions> {
+    name: string;
+    flags: {
+        mounts: Flag<string[], boolean>;
+    };
 }
 
 interface GlobalOptions {
@@ -1234,6 +1595,86 @@ interface Image {
      * TODO
      */
     history: string[];
+}
+interface Volume {
+    /**
+     * An absolute path to the bind mount location on the **host**.
+     */
+    hostPath: string;
+    /**
+     * An absolute path to the bind mount location in the **container**.
+     */
+    containerPath: string;
+    /**
+     * If `true`, mount the volume in read-only mode.
+     *
+     * @default false
+     */
+    readOnly?: boolean;
+    /**
+     * If `true`, Buildah will use the correct host UID and GID based on the UID and GID within the container, to change the owner and group of the source volume.
+     *
+     * By default, Buildah does not change the owner and group of source volume directories mounted into containers. If a container is created in a new user namespace, the UID and GID in the container may correspond to another UID and GID on the host.
+     *
+     * @default false
+     */
+    chown?: boolean;
+    /**
+     * Labeling systems like SELinux require that proper labels are placed on volume content mounted into a container. Without a label, the security system might prevent the processes running inside the container from using the content. By default, Buildah does not change the labels set by the OS.
+     *
+     * Valid options are:
+     *
+     * - `none` - do not relabel the volume (default)
+     * - `shared` - two containers share the volume content, Buildah will label the content with a shared content label, shared volume labels allow all containers to read/write content
+     * - `private` - label the content with a private unshared label, only the current container can use a private volume
+     *
+     * @default 'none'
+     */
+    relabel?: 'none' | 'shared' | 'private';
+    /**
+     * By default bind mounted volumes are `private`. That means any mounts done inside container will not be visible on the host and vice versa. This behavior can be changed by specifying a volume mount propagation property.
+     *
+     * When the mount propagation policy is set to `shared`, any mounts completed inside the container on that volume will be visible to both the host and container.
+     *
+     * When the mount propagation policy is set to `slave`, one way mount propagation is enabled and any mounts completed on the host for that volume will be visible only inside of the container.
+     *
+     * The propagation property can be specified only for bind mounted volumes and not for internal volumes or named volumes. For mount propagation to work on the source mount point (the mount point where source dir is mounted on) it has to have the right propagation properties. For shared volumes, the source mount point has to be shared. And for `slave` volumes, the source mount has to be either `shared` or `slave`.
+     *
+     * Use `df <source-dir>` to determine the source mount and then use `findmnt -o TARGET,PROPAGATION <source-mount-dir>` to determine propagation properties of source mount, if `findmnt` utility is not available, the source mount point can be determined by looking at the mount entry in `/proc/self/mountinfo`. Look at optional fields and see if any propagation properties are specified. `shared:X` means the mount is shared, `master:X` means the mount is `slave` and if nothing is there that means the mount is `private`.
+     *
+     * To change propagation properties of a mount point use the mount command. For example, to bind mount the source directory `/foo` do `mount --bind /foo /foo` and `mount --make-private --make-shared /foo`. This will convert `/foo` into a `shared` mount point. The propagation properties of the source mount can be changed directly. For instance if `/` is the source mount for `/foo`, then use `mount --make-shared /` to convert `/` into a shared mount.
+     */
+    mountPropagation?: 'private' | 'shared' | 'slave';
+}
+
+declare class MountCommand extends Command<{}> {
+    name: string;
+    flags: {};
+}
+
+declare class RenameCommand extends Command<{}> {
+    name: string;
+    flags: {};
+}
+
+declare class RmCommand extends Command<{}> {
+    name: string;
+    flags: {};
+}
+
+declare class TagCommand extends Command<{}> {
+    name: string;
+    flags: {};
+}
+
+declare class UnmountCommand extends Command<{}> {
+    name: string;
+    flags: {};
+}
+
+declare class VersionCommand extends Command<{}> {
+    name: string;
+    flags: {};
 }
 
 declare class Buildah {
@@ -1446,6 +1887,5 @@ declare class Buildah {
      */
     unshare(options?: UnshareOptions): Promise<void>;
 }
-declare const buildah: Buildah;
 
-export { Buildah, buildah };
+export { AddCommand, AddOptions, BudCommand, BudOptions, Buildah, Command, CommitCommand, CommitOptions, ConfigCommand, ConfigOptions, Container, ContainersCommand, CopyCommand, CopyOptions, Flag, FlagsFor, FromAndBudOptions, FromCommand, FromOptions, GlobalOptions, Image, ImagesCommand, LayerOptions, ListContainersOptions, ListImagesOptions, MountCommand, NamespaceOptions, PullCommand, PullOptions, PushCommand, PushOptions, RemoveImageOptions, RenameCommand, RmCommand, RmiCommand, RunCommand, RunOptions, TagCommand, UnmountCommand, UnshareCommand, UnshareOptions, UserNSOptions, UserOptions, VersionCommand, Volume, booleanFlag, fromAndBudFlags, layerFlags, namespaceFlags, numberArrayFlag, numberFlag, stringArrayFlag, stringFlag, userFlags, userNSFlags, virtualFlag };

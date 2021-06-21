@@ -466,6 +466,14 @@ class UnshareCommand extends Command {
     }
 }
 
+class VersionCommand extends Command {
+    constructor() {
+        super(...arguments);
+        this.name = 'version';
+        this.flags = {};
+    }
+}
+
 const addCommand = new AddCommand();
 const budCommand = new BudCommand();
 const commitCommand = new CommitCommand();
@@ -778,8 +786,37 @@ class Buildah {
         await unshareCommand.exec(this.command, options);
     }
 }
-const buildah = new Buildah();
 
+exports.AddCommand = AddCommand;
+exports.BudCommand = BudCommand;
 exports.Buildah = Buildah;
-exports.buildah = buildah;
+exports.Command = Command;
+exports.CommitCommand = CommitCommand;
+exports.ConfigCommand = ConfigCommand;
+exports.ContainersCommand = ContainersCommand;
+exports.CopyCommand = CopyCommand;
+exports.FromCommand = FromCommand;
+exports.ImagesCommand = ImagesCommand;
+exports.MountCommand = MountCommand;
+exports.PullCommand = PullCommand;
+exports.PushCommand = PushCommand;
+exports.RenameCommand = RenameCommand;
+exports.RmCommand = RmCommand;
+exports.RmiCommand = RmiCommand;
+exports.RunCommand = RunCommand;
+exports.TagCommand = TagCommand;
+exports.UnmountCommand = UnmountCommand;
+exports.UnshareCommand = UnshareCommand;
+exports.VersionCommand = VersionCommand;
+exports.booleanFlag = booleanFlag;
+exports.fromAndBudFlags = fromAndBudFlags;
+exports.layerFlags = layerFlags;
+exports.namespaceFlags = namespaceFlags;
+exports.numberArrayFlag = numberArrayFlag;
+exports.numberFlag = numberFlag;
+exports.stringArrayFlag = stringArrayFlag;
+exports.stringFlag = stringFlag;
+exports.userFlags = userFlags;
+exports.userNSFlags = userNSFlags;
+exports.virtualFlag = virtualFlag;
 //# sourceMappingURL=index.js.map

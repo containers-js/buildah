@@ -350,4 +350,25 @@ export class Buildah {
   }
 }
 
-export const buildah = new Buildah()
+export * from './commands/AddCommand'
+export * from './commands/BudCommand'
+export * from './commands/Command'
+export * from './commands/CommitCommand'
+export * from './commands/commonFlags'
+export * from './commands/ConfigCommand'
+export * from './commands/ContainersCommand'
+export * from './commands/CopyCommand'
+export * from './commands/FromCommand'
+export * from './commands/ImagesCommand'
+export * from './commands/MountCommand'
+export * from './commands/PullCommand'
+export * from './commands/PushCommand'
+export * from './commands/RenameCommand'
+export * from './commands/RmCommand'
+export * from './commands/RmiCommand'
+export * from './commands/RunCommand'
+export * from './commands/TagCommand'
+export * from './commands/UnmountCommand'
+export * from './commands/UnshareCommand'
+export * from './commands/VersionCommand'
+export * from './types'
