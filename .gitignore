@@ -1,4 +1,6 @@
-dist
+# Temporarily publish compiled module to GitHub
+# dist
+
 docs/
 node_modules
 tmp
