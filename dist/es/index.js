@@ -418,6 +418,7 @@ class RunCommand extends Command {
             addHistory: booleanFlag('--add-history'),
             capAdd: stringArrayFlag('--cap-add'),
             capDrop: stringArrayFlag('--cap-drop'),
+            env: stringArrayFlag('--env'),
             hostname: stringFlag('--hostname'),
             isolation: stringFlag('--isolation'),
             runtime: stringFlag('--runtime'),
@@ -426,6 +427,7 @@ class RunCommand extends Command {
             tty: booleanFlag('--terminal'),
             volumes: stringArrayFlag('--volume'),
             mounts: stringArrayFlag('--mount'),
+            workingdir: stringFlag('--workingdir'),
             ...userFlags,
             ...namespaceFlags,
         };

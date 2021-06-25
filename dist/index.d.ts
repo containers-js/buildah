@@ -1435,6 +1435,10 @@ interface RunOptions extends UserOptions, NamespaceOptions {
      */
     capDrop?: string[];
     /**
+     * Temporarily add a value (e.g. `env=value`) to the environment for the running process. Unlike `buildah config --env`, the environment will not persist to later calls to `buildah run` or to the built image. Can be used multiple times.
+     */
+    env?: string[];
+    /**
      * Set the hostname inside of the running container.
      */
     hostname?: string;
@@ -1491,9 +1495,13 @@ interface RunOptions extends UserOptions, NamespaceOptions {
      */
     tty?: boolean;
     /**
-     * Create a bind moun
+     * Create a bind mount
      */
     volumes?: string[];
+    /**
+     * Temporarily set the working directory for the running process. Unlike `buildah config --workingdir`, the workingdir will not persist to later calls to `buildah run` or the built image.
+     */
+    workingdir?: string;
 }
 declare class RunCommand extends Command<RunOptions> {
     name: string;
@@ -1508,6 +1516,7 @@ declare class RunCommand extends Command<RunOptions> {
         addHistory: Flag<boolean, boolean>;
         capAdd: Flag<string[], boolean>;
         capDrop: Flag<string[], boolean>;
+        env: Flag<string[], boolean>;
         hostname: Flag<string, boolean>;
         isolation: Flag<string, boolean>;
         runtime: Flag<string, boolean>;
@@ -1516,6 +1525,7 @@ declare class RunCommand extends Command<RunOptions> {
         tty: Flag<boolean, boolean>;
         volumes: Flag<string[], boolean>;
         mounts: Flag<string[], boolean>;
+        workingdir: Flag<string, boolean>;
     };
 }
 
