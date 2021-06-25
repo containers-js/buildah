@@ -1866,7 +1866,7 @@ declare class Buildah {
      * @param command Command and optional arguments to execute inside the container
      * @param options Run options
      */
-    run(container: string, command: string | string, options?: RunOptions): Promise<void>;
+    run(container: string, command: string | string[], options?: RunOptions): Promise<void>;
     /**
      * Adds additional names to locally-stored images.
      *
