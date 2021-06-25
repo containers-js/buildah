@@ -24,6 +24,11 @@ export interface RunOptions extends UserOptions, NamespaceOptions {
   capDrop?: string[]
 
   /**
+   * Temporarily add a value (e.g. `env=value`) to the environment for the running process. Unlike `buildah config --env`, the environment will not persist to later calls to `buildah run` or to the built image. Can be used multiple times.
+   */
+  env?: string[]
+
+  /**
    * Set the hostname inside of the running container.
    */
   hostname?: string
@@ -87,9 +92,14 @@ export interface RunOptions extends UserOptions, NamespaceOptions {
   tty?: boolean
 
   /**
-   * Create a bind moun
+   * Create a bind mount
    */
   volumes?: string[]
+
+  /**
+   * Temporarily set the working directory for the running process. Unlike `buildah config --workingdir`, the workingdir will not persist to later calls to `buildah run` or the built image.
+   */
+  workingdir?: string
 }
 
 export class RunCommand extends Command<RunOptions> {
@@ -98,6 +108,7 @@ export class RunCommand extends Command<RunOptions> {
     addHistory: booleanFlag('--add-history'),
     capAdd: stringArrayFlag('--cap-add'),
     capDrop: stringArrayFlag('--cap-drop'),
+    env: stringArrayFlag('--env'),
     hostname: stringFlag('--hostname'),
     isolation: stringFlag('--isolation'),
     runtime: stringFlag('--runtime'),
@@ -106,6 +117,7 @@ export class RunCommand extends Command<RunOptions> {
     tty: booleanFlag('--terminal'),
     volumes: stringArrayFlag('--volume'),
     mounts: stringArrayFlag('--mount'),
+    workingdir: stringFlag('--workingdir'),
 
     ...userFlags,
     ...namespaceFlags,
