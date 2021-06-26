@@ -1782,7 +1782,7 @@ declare class Buildah {
      * List all of the currently mounted containers.
      */
     listMounts(): Promise<{
-        container: string;
+        container?: string;
         mountPoint: string;
     }[]>;
     /**
@@ -1794,7 +1794,7 @@ declare class Buildah {
      * @returns List of container IDs and mount points
      */
     mount(container: string | string[]): Promise<{
-        container: string;
+        container?: string;
         mountPoint: string;
     }[]>;
     /**

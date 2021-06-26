@@ -171,16 +171,9 @@ export class Buildah {
   /**
    * List all of the currently mounted containers.
    */
-  async listMounts() {
-    const cmd = await mountCommand.exec(this.command, {})
-    return cmd.stdout
-      .trim()
-      .split('\n')
-      .map((line) => {
-        const matches = /^(.+) (.+)$/.exec(line)
-        if (!matches) throw new Error(`Unknown mount line: ${line}`)
-        return {container: matches[1], mountPoint: matches[2]}
-      })
+  async listMounts(): Promise<{container?: string; mountPoint: string}[]> {
+    const cmd = await mountCommand.exec(this.command, {}, '--json')
+    return JSON.parse(cmd.stdout)
   }
 
   /**
@@ -191,17 +184,10 @@ export class Buildah {
    * @param container One or more container IDs to mount
    * @returns List of container IDs and mount points
    */
-  async mount(container: string | string[]) {
+  async mount(container: string | string[]): Promise<{container?: string; mountPoint: string}[]> {
     const params = Array.isArray(container) ? container : [container]
-    const cmd = await mountCommand.exec(this.command, {}, ...params)
-    return cmd.stdout
-      .trim()
-      .split('\n')
-      .map((line) => {
-        const matches = /^(.+) (.+)$/.exec(line)
-        if (!matches) throw new Error(`Unknown mount line: ${line}`)
-        return {container: matches[1], mountPoint: matches[2]}
-      })
+    const cmd = await mountCommand.exec(this.command, {}, '--json', ...params)
+    return JSON.parse(cmd.stdout)
   }
 
   /**

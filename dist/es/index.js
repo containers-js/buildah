@@ -615,16 +615,8 @@ class Buildah {
      * List all of the currently mounted containers.
      */
     async listMounts() {
-        const cmd = await mountCommand.exec(this.command, {});
-        return cmd.stdout
-            .trim()
-            .split('\n')
-            .map((line) => {
-            const matches = /^(.+) (.+)$/.exec(line);
-            if (!matches)
-                throw new Error(`Unknown mount line: ${line}`);
-            return { container: matches[1], mountPoint: matches[2] };
-        });
+        const cmd = await mountCommand.exec(this.command, {}, '--json');
+        return JSON.parse(cmd.stdout);
     }
     /**
      * Mounts the specified container's root file system in a location which can be accessed from the host, and returns its location.
@@ -636,16 +628,8 @@ class Buildah {
      */
     async mount(container) {
         const params = Array.isArray(container) ? container : [container];
-        const cmd = await mountCommand.exec(this.command, {}, ...params);
-        return cmd.stdout
-            .trim()
-            .split('\n')
-            .map((line) => {
-            const matches = /^(.+) (.+)$/.exec(line);
-            if (!matches)
-                throw new Error(`Unknown mount line: ${line}`);
-            return { container: matches[1], mountPoint: matches[2] };
-        });
+        const cmd = await mountCommand.exec(this.command, {}, '--json', ...params);
+        return JSON.parse(cmd.stdout);
     }
     /**
      * Removes all local images from the system that do not have a tag and do not have a child image pointing to them.
