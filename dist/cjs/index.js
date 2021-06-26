@@ -15,7 +15,7 @@ class Command {
     constructor(binary = 'buildah') {
         /** this is the exec */
         this.exec = async (file, options, ...args) => {
-            return await execa__default['default'](file, [this.name, ...this.args(options), ...args]);
+            return execa__default['default'](file, [this.name, ...this.args(options), ...args]);
         };
         this.binary = binary;
     }
@@ -730,7 +730,7 @@ class Buildah {
      */
     async run(container, command, options = {}) {
         const params = Array.isArray(command) ? command : [command];
-        await runCommand.exec(this.command, options, container, '--', ...params);
+        return runCommand.exec(this.command, options, container, '--', ...params);
     }
     /**
      * Adds additional names to locally-stored images.

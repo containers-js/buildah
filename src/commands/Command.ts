@@ -26,7 +26,7 @@ export abstract class Command<Options extends Record<string, any>> {
 
   /** this is the exec */
   exec = async (file: string, options: Options, ...args: string[]) => {
-    return await execa(file, [this.name, ...this.args(options), ...args])
+    return execa(file, [this.name, ...this.args(options), ...args])
   }
 }
 

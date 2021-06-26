@@ -289,7 +289,7 @@ export class Buildah {
    */
   async run(container: string, command: string | string[], options: RunOptions = {}) {
     const params = Array.isArray(command) ? command : [command]
-    await runCommand.exec(this.command, options, container, '--', ...params)
+    return runCommand.exec(this.command, options, container, '--', ...params)
   }
 
   /**
