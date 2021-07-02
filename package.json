@@ -9,6 +9,9 @@
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "./dist"
+  ],
   "scripts": {
     "build": "rollup -c",
     "clean": "rm -rf dist",
