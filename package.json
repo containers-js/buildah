@@ -1,5 +1,5 @@
 {
-  "name": "@containers/buildah",
+  "name": "@containers-js/buildah",
   "version": "0.0.1",
   "author": {
     "name": "Jacob Gillespie",

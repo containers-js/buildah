@@ -9,15 +9,15 @@ First, ensure you have installed the `buildah` command-line interface.
 Next, install with your preferred package manager:
 
 ```shell
-$ yarn add @containers/buildah
-$ npm install @containers/buildah
-$ pnpm add @containers/buildah
+$ yarn add @containers-js/buildah
+$ npm install @containers-js/buildah
+$ pnpm add @containers-js/buildah
 ```
 
 ## Usage
 
 ```typescript
-import {Buildah} from '@containers/buildah'
+import {Buildah} from '@containers-js/buildah'
 
 const client = new Buildah()
 
