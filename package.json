@@ -1,6 +1,15 @@
 {
   "name": "@containers-js/buildah",
   "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/containers-js/buildah.git"
+  },
+  "homepage": "https://github.com/containers-js/buildah",
+  "funding": {
+    "type": "GitHub",
+    "url": "https://github.com/sponsors/jacobwgillespie"
+  },
   "author": {
     "name": "Jacob Gillespie",
     "email": "jacobwgillespie@gmail.com"
@@ -46,5 +55,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "sideEffects": false
 }
